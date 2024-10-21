@@ -1,3 +1,5 @@
 class Crossmatch(object):
-    def __init__():
+    def __init__(self):
         self.info = None
+
+    
