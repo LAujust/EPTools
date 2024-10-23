@@ -6,6 +6,8 @@ class Crossmatch(object):
         self.heasarc = Heasarc()
         self.asassn = SkyPatrolClient()
 
+    
+
     def xmm_archive(self,pos,radius=3*u.arcmin):
         """
         pos[str]:       astropy.SkyCoords input, i.e. 'ra dec'(in degree), 'hhmmss +ddmmss', 'hh:mm:ss +dd:mm:ss'
@@ -29,5 +31,7 @@ class Crossmatch(object):
 
         return lcs
 
+    def ztf_lc(self,pos,radius):
+        pass
 
     
