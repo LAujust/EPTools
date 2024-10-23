@@ -1,10 +1,13 @@
 import numpy as np
+import pandas as pd
 import astropy.units as u
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
 from astropy.coordinates import SkyCoord
 from pyasassn.client import SkyPatrolClient
 from astropy.io.votable import parse_single_table
+
+from astropy.utils.data import conf
 
 pi = np.pi
 def flx2lum(f,d):
