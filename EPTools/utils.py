@@ -1,6 +1,8 @@
 import numpy as np
 import astropy.units as u
 import astropy.constants as c
+from astroquery.heasarc import Heasarc
+from astropy.coordinates import SkyCoord
 
 pi = np.pi
 def flx2lum(f,d):
