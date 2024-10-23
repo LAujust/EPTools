@@ -12,9 +12,6 @@ class Model(object):
         pass
 
 
-
-
-
 class Sun19(Model):
     def __init__(self) -> None:
         pass
