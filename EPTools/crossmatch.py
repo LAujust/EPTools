@@ -31,7 +31,7 @@ class Crossmatch(object):
 
         return lcs
     
-    def get_ZTF_LC(self, ra, dec, band:str, match_rad:float=5):
+    def ztf_lc(self, ra, dec, band:str, match_rad:float=5):
         """
         :param band: str
         :param match_rad: float, unit is arcsec; defaule value is 5 arcsec
@@ -52,8 +52,5 @@ class Crossmatch(object):
         catalog_mlq = pd.read_csv('/Users/liangrunduo/Desktop/Aujust/NAOC/EP/Crossmatch/catalogs/milliquas/milliquas.txt',
                                 on_bad_lines='skip')
         print(catalog_mlq)
-
-    def ztf_lc(self,pos,radius):
-        pass
 
     
