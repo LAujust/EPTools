@@ -30,6 +30,23 @@ def Hz2lam(nu):
 def keV2lam(kevs):
     return Hz2lam(keV2Hz(kevs))
 
+def mag2flx(mags,lam_ref=None,FWHM=None):
+    """
+    Output[flx]:    in erg s^-1 cm^-2 Hz^-1
+    Output[flx]:    in erg s^-1 cm^-2 if wavelength and FWHM are given
+    """
+    if lam_ref is not None and FWHM is not None:
+        delta_nu = lam2Hz(lam_ref-FWHM) - lam2Hz(lam_ref+FWHM)
+        return delta_nu * 10**(-0.4*(mags+48.6))
+    else:
+        return 10**(-0.4*(mags+48.6))
+
+def flx2mag(flxs):
+    """
+    flxs[float/array]:  in erg s^-1 cm^-2 Hz^-1
+    """
+    return -2.5*np.log10(flxs) - 48.6
+
 def flx2lum(f,d):
     """
     f[flux]:        erg/s/cm^2
