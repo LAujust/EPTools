@@ -10,6 +10,17 @@ from astropy.io.votable import parse_single_table
 from astropy.utils.data import conf
 
 pi = np.pi
+
+def keV2Hz(kevs):
+    return 2.417990504024e+17 * kevs
+
+def kev2kT(kevs):
+    return 11604525.00617 * kevs
+
+def lam2Hz(lams):
+    lams = lams * u.Angstrom
+    return (c.c/lams).cgs.value
+
 def flx2lum(f,d):
     """
     f[flux]:        erg/s/cm^2
