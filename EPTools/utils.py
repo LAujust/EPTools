@@ -14,12 +14,21 @@ pi = np.pi
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
 
-def kev2kT(kevs):
+def keV2T(kevs):
     return 11604525.00617 * kevs
 
 def lam2Hz(lams):
+    'lams[float/np.array]:  wavelength in Angstrom'
     lams = lams * u.Angstrom
     return (c.c/lams).cgs.value
+
+def Hz2lam(nu):
+    'Output:    wavelength in Angstrom'
+    nu = nu * u.Hz
+    return (c.c/nu).cgs.value * 1e8
+
+def keV2lam(kevs):
+    return Hz2lam(keV2Hz(kevs))
 
 def flx2lum(f,d):
     """
