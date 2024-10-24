@@ -6,10 +6,7 @@ from astroquery.heasarc import Heasarc
 from astropy.coordinates import SkyCoord
 from pyasassn.client import SkyPatrolClient
 from astropy.io.votable import parse_single_table
-
 from astropy.utils.data import conf
-
-pi = np.pi
 
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
@@ -83,3 +80,18 @@ def data2acs(data,out_dir):
     
     print(out)
     np.savetxt(prefix+'.txt',out)
+    
+    
+    
+#========================================================================#
+
+pi = np.pi
+band_wavelength = {
+    'R':(6427,1298),
+    'V':(5345,840),
+    'g':(4782,1419),
+    'r':(6217,1327),
+    'i':(7532,1244),
+    'z':(8685,1024),
+    'L':(5523,2330),
+}
