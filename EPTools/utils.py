@@ -32,3 +32,17 @@ def lum2flux(L,d):
     d = d * u.pc
     f = L/(4*pi*d**2)
     return f.cgs.value 
+
+def data2acs(data,out_dir):
+    t, cr, cr_err = data[:,0], data[:,1], data[:,2]
+    
+    tstart = t
+    tstop = t + (t[1]-t[0])
+    
+    third = cr*(tstop-tstart)
+    fourth = cr_err*(tstop-tstart)
+    
+    out = np.vstack((tstart,tstop,third,fourth)).T
+    
+    print(out)
+    np.savetxt(prefix+'.txt',out)
