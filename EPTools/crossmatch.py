@@ -5,17 +5,20 @@ class Crossmatch(object):
         self.info = None
         self.heasarc = Heasarc()
         self.asassn = SkyPatrolClient()
-
+        self.recommand_xmatch_mission = ['swiftmastr','rassmaster','xmmslewful','xmmcdfs210',
+                                         'xmmcdfs510','xmmssc','xmmssclwbs','xmmstack',
+                                         'xmmstackob',
+                                         ]
     
 
     def xmm_archive(self,pos,radius=3*u.arcmin):
-        """
-        pos[str]:       astropy.SkyCoords input, i.e. 'ra dec'(in degree), 'hhmmss +ddmmss', 'hh:mm:ss +dd:mm:ss'
-        radius[units]:  arcmin/arcsec/degree (i.e. u.arcmin)
-        """
-        coord = SkyCoord(pos, frame='icrs')
-        table = self.heasarc.query_region(coord, mission='xmmslewful', radius=radius)
-        return table
+        return self._xmatch_archive(pos=pos,radius=radius,mission='xmmslewful')
+
+    def rosat_archive(self,pos,radius=3*u.arcmin):
+        return self._xmatch_archive(pos=pos,radius=radius,mission='rassmaster')
+    
+    def swift_archive(self,pos,radius=3*u.arcmin):
+        return self._xmatch_archive(pos=pos,radius=radius,mission='swiftmastr')
     
     def asassn_lc(self,pos,radius=3,units='arcmin',catalog='master_list'):
         """
@@ -54,3 +57,12 @@ class Crossmatch(object):
         print(catalog_mlq)
 
     
+
+    def _xmatch_archive(self,pos,radius=3*u.arcmin,mission='xmmslewful'):
+        """
+        pos[str]:       astropy.SkyCoords input, i.e. 'ra dec'(in degree), 'hhmmss +ddmmss', 'hh:mm:ss +dd:mm:ss'
+        radius[units]:  arcmin/arcsec/degree (i.e. u.arcmin)
+        """
+        coord = SkyCoord(pos, frame='icrs')
+        table = self.heasarc.query_region(coord, mission='xmmslewful', radius=radius)
+        return table
