@@ -79,7 +79,7 @@ def data2acs(data,out_dir):
     out = np.vstack((tstart,tstop,third,fourth)).T
     
     print(out)
-    np.savetxt(prefix+'.txt',out)
+    np.savetxt(out_dir,out)
     
     
     

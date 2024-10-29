@@ -11,14 +11,14 @@ class Crossmatch(object):
                                          ]
     
 
-    def xmm_archive(self,pos,radius=3*u.arcmin):
-        return self._xmatch_archive(pos=pos,radius=radius,mission='xmmslewful')
+    def xmm_slew_archive(self,pos,radius=3*u.arcmin):
+        return self.xmatch_archive(pos=pos,radius=radius,mission='xmmslewful')
 
     def rosat_archive(self,pos,radius=3*u.arcmin):
-        return self._xmatch_archive(pos=pos,radius=radius,mission='rassmaster')
+        return self.xmatch_archive(pos=pos,radius=radius,mission='rassmaster')
     
     def swift_archive(self,pos,radius=3*u.arcmin):
-        return self._xmatch_archive(pos=pos,radius=radius,mission='swiftmastr')
+        return self.xmatch_archive(pos=pos,radius=radius,mission='swiftmastr')
     
     def asassn_lc(self,pos,radius=3,units='arcmin',catalog='master_list'):
         """
@@ -58,7 +58,7 @@ class Crossmatch(object):
 
     
 
-    def _xmatch_archive(self,pos,radius=3*u.arcmin,mission='xmmslewful'):
+    def xmatch_archive(self,pos,radius=3*u.arcmin,mission='xmmslewful'):
         """
         pos[str]:       astropy.SkyCoords input, i.e. 'ra dec'(in degree), 'hhmmss +ddmmss', 'hh:mm:ss +dd:mm:ss'
         radius[units]:  arcmin/arcsec/degree (i.e. u.arcmin)
