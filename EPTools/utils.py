@@ -14,6 +14,10 @@ def keV2Hz(kevs):
 def keV2T(kevs):
     return 11604525.00617 * kevs
 
+def keV2erg(kevs):
+    return 1.602e-9 * kevs
+
+
 def lam2Hz(lams):
     'lams[float/np.array]:  wavelength in Angstrom'
     lams = lams * u.Angstrom
