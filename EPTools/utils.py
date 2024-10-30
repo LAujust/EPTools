@@ -7,9 +7,13 @@ from astropy.coordinates import SkyCoord
 from pyasassn.client import SkyPatrolClient
 from astropy.io.votable import parse_single_table
 from astropy.utils.data import conf
+import sncosmo
 
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
+
+def Hz2keV(nu):
+    return nu/2.417990504024e+17
 
 def keV2T(kevs):
     return 11604525.00617 * kevs
@@ -31,16 +35,26 @@ def Hz2lam(nu):
 def keV2lam(kevs):
     return Hz2lam(keV2Hz(kevs))
 
+def lam2keV(lams):
+    return(Hz2keV(lam2Hz(lams)))
+
 def mag2flx(mags,lam_ref=None,FWHM=None):
     """
     Output[flx]:    in erg s^-1 cm^-2 Hz^-1
     Output[flx]:    in erg s^-1 cm^-2 if wavelength and FWHM are given
     """
     if lam_ref is not None and FWHM is not None:
-        delta_nu = lam2Hz(lam_ref-FWHM) - lam2Hz(lam_ref+FWHM)
+        delta_nu = lam2Hz(lam_ref-0.5*FWHM) - lam2Hz(lam_ref+0.5*FWHM)
         return delta_nu * 10**(-0.4*(mags+48.6))
     else:
         return 10**(-0.4*(mags+48.6))
+    
+def mag2flx_sncosmo(mag,band):
+    ab = sncosmo.get_magsystem('ab')
+    flx = ab.band_mag_to_flux(mag,band)
+    #if you want to convert to erg you should multiple by e=(c.h*nu*u.Hz).cgs
+    return flx # in photons / s / cm^2
+
 
 def flx2mag(flxs):
     """

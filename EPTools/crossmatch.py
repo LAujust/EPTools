@@ -34,12 +34,14 @@ class Crossmatch(object):
 
         return lcs
     
-    def ztf_lc(self, ra, dec, band:str, match_rad:float=5):
+    def ztf_lc(self, pos:str, band:str, match_rad:float=5):
         """
         :param band: str
         :param match_rad: float, unit is arcsec; defaule value is 5 arcsec
         :return: astropy.io.votable
         """
+        ra, dec = pos.split(' ')
+        ra, dec = float(ra), float(dec)
         match_rad = match_rad/3600
         API =  f"https://irsa.ipac.caltech.edu/cgi-bin/ZTF/nph_light_curves?POS=CIRCLE%20{ra}%20{dec}%20{match_rad}&BANDNAME={band}"
         lcdata = parse_single_table(API).to_table()
