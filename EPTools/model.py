@@ -25,7 +25,6 @@ class BlackBody(Model):
         return sed.cgs
 
 
-
 class Sun19(Model):
     def __init__(self) -> None:
         pass
