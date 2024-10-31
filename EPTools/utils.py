@@ -45,7 +45,7 @@ def mag2flx(mags,lam_ref=None,FWHM=None):
     """
     if lam_ref is not None and FWHM is not None:
         delta_nu = lam2Hz(lam_ref-0.5*FWHM) - lam2Hz(lam_ref+0.5*FWHM)
-        return delta_nu * 10**(-0.4*(mags+48.6))
+        return delta_nu * 10**(-0.4*(mags+48.6)), delta_nu
     else:
         return 10**(-0.4*(mags+48.6))
     
@@ -112,4 +112,5 @@ band_wavelength = {
     'i':(7532,1244),
     'z':(8685,1024),
     'L':(5523,2330),
+    'u':(3467,668)
 }
