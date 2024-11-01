@@ -4,7 +4,7 @@ class Crossmatch(object):
     def __init__(self):
         self.info = None
         self.heasarc = Heasarc()
-        self.asassn = SkyPatrolClient()
+        self.asassn = None
         self.recommand_xmatch_mission = ['swiftmastr','rassmaster','xmmslewful','xmmcdfs210',
                                          'xmmcdfs510','xmmssc','xmmssclwbs','xmmstack',
                                          'xmmstackob',
@@ -25,6 +25,8 @@ class Crossmatch(object):
         pos[str]:       'ra_deg dec_deg' or 'hh:mm:ss +dd:mm:ss'
         radius[float]:  radius in degree
         """
+        if self.asassn is None:
+            self.asassn = SkyPatrolClient()
         string = pos.split(' ')
         ra, dec = string[0],string[1]
         lcs = self.asassn.cone_search(ra_deg=ra, dec_deg=dec, 
