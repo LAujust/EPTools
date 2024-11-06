@@ -8,6 +8,7 @@ from pyasassn.client import SkyPatrolClient
 from astropy.io.votable import parse_single_table
 from astropy.utils.data import conf
 import sncosmo
+from ligo.gracedb.rest import GraceDb
 
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
@@ -98,6 +99,25 @@ def data2acs(data,out_dir):
     
     print(out)
     np.savetxt(out_dir,out)
+
+
+def retrive_gracedb(query=''):
+    far = 1 #per yr
+    far = far/31557600
+    far = 'far < 3.17e-8'
+    client = GraceDb()
+    events = client.superevents(query='is_public: True runid: O4b far < 3.17e-8')
+    event_messages = {}
+    for event in events:
+        #print(f"Event ID: {event['superevent_id']}")
+        id = event['superevent_id']
+        try:
+            circular = client.files(id,id+'-update.json').json()
+        except:
+            circular = 'No update circular'
+        event_messages[id] = circular
+
+    return event_messages
     
     
     
