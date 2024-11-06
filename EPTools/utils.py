@@ -81,7 +81,7 @@ def lum2flux(L,d):
     output[f]:      erg/s/cm^2
     """
     L = L * u.erg/u.s
-    f = f * u.erg/u.s/(u.cm)**2
+    #f = f * u.erg/u.s/(u.cm)**2
     d = d * u.pc
     f = L/(4*pi*d**2)
     return f.cgs.value 
@@ -106,7 +106,7 @@ def retrive_gracedb(query=''):
     far = far/31557600
     far = 'far < 3.17e-8'
     client = GraceDb()
-    events = client.superevents(query='is_public: True runid: O4b far < 3.17e-8')
+    events = client.superevents(query=query)
     event_messages = {}
     for event in events:
         #print(f"Event ID: {event['superevent_id']}")
