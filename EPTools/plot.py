@@ -1,4 +1,4 @@
-from utils import *
+from .utils import *
 
 
 def plot_gcn_data(file_root='./',output='standard_gcn.pdf'):
