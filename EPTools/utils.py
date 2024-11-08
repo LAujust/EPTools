@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import glob
 import astropy.units as u
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
@@ -9,6 +10,7 @@ from astropy.io.votable import parse_single_table
 from astropy.utils.data import conf
 import sncosmo
 from ligo.gracedb.rest import GraceDb
+import ligo.skymap
 
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
@@ -133,4 +135,10 @@ band_wavelength = {
     'z':(8685,1024),
     'L':(5523,2330),
     'u':(3467,668)
+}
+
+x_instrument_energy_range = {
+    'EP-WXT':[0.5,4],
+    'EP-FXT':[0.4,10],
+    'XRT':[0.4,10]
 }
