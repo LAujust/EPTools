@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import glob
+import sys, os
 import astropy.units as u
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
