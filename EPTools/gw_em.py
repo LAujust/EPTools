@@ -6,6 +6,8 @@ from xspec import *
 'With the help of PyXspec'
 
 
-s1 = Spectrum('../PC.pi')
+def observed_SED():
+    AllData.clear()
+    pass
 
 
