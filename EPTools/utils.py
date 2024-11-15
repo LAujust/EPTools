@@ -12,6 +12,9 @@ from astropy.utils.data import conf
 import sncosmo
 from ligo.gracedb.rest import GraceDb
 import ligo.skymap
+import simsurvey
+
+sys.path.append('$HEADAS/lib/python')
 
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
