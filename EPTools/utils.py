@@ -121,6 +121,54 @@ def retrive_gracedb(query=''):
         event_messages[id] = circular
 
     return event_messages
+
+def X2mAB(F_X,E_min,E_max):
+    """
+    Convert observed X-ray flux to AB magnitude.
+    
+    Parameters:
+    - F_X : float : Observed X-ray flux in erg/s/cm² (integrated over the band)
+    - E_min : float : Minimum energy of the X-ray band in keV
+    - E_max : float : Maximum energy of the X-ray band in keV
+    
+    Returns:
+    - m_AB : float : AB magnitude corresponding to the observed X-ray flux
+    """
+
+    # Constants
+    h = 6.626e-27  # Planck's constant in erg·s
+    erg_to_keV = 1.60218e-9  # Conversion factor from erg to keV
+    ab_zero_flux_density = 3.63e-20  # Zero-point for AB magnitude in erg/s/cm²/Hz
+
+    # Step 1: Calculate the central energy (E_c) and bandpass (ΔE) in keV
+    E_c = (E_min + E_max) / 2  # Central energy in keV
+    delta_E = E_max - E_min    # Energy range in keV
+
+    # Step 2: Convert central energy to frequency (ν_c)
+    nu_c = (E_c * erg_to_keV) / h  # Frequency in Hz
+
+    # Step 3: Convert integrated flux (F_X) to flux density per unit frequency (f_ν)
+    f_nu = (F_X / delta_E) * (h / (E_c * erg_to_keV) ** 2)  # Flux density in erg/s/cm²/Hz
+
+    # Step 4: Convert flux density to AB magnitude (m_AB)
+    m_AB = -2.5 * np.log10(f_nu / ab_zero_flux_density)
+
+    return m_AB
+
+
+def EPexpo2mAB(expo,instrument:str):
+    if instrument == 'WXT':
+        F_X = 6.13670736e-09 * expo**-0.833761923
+        E_min, E_max = 0.5, 4
+    elif instrument == 'FXT':
+        F_X = 5.49101782e-11 * expo**-0.812917739
+        E_min, E_max = 0.5, 10
+    else:
+        raise KeyError('Please type correct instrument name!')
+    
+    return X2mAB(F_X,E_min,E_max)
+    
+
     
     
     
