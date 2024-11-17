@@ -160,6 +160,10 @@ def X2mAB(F_X,E_min,E_max):
 
 
 def EPexpo2mAB(expo,instrument:str):
+    """
+    expo[float, array]:     exposure time in second
+    instrument[str]:        WXT or FXT
+    """
     if instrument == 'WXT':
         F_X = 6.13670736e-09 * expo**-0.833761923
         E_min, E_max = 0.5, 4
@@ -171,6 +175,12 @@ def EPexpo2mAB(expo,instrument:str):
     
     return X2mAB(F_X,E_min,E_max)
     
+
+def BNS_ejecta_mass(Mc, q, R1, R2, Mtov):
+    pass
+
+def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
+    pass
 
     
     
