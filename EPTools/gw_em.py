@@ -7,13 +7,15 @@ from xspec import *
 
 'Register X-ray filter:: epwxt, epfxt'
 def register_epband():
-    wave_ = np.linspace(Hz2lam(keV2Hz(4)), Hz2lam(keV2Hz(0.5)),20)
+    wave_ = np.linspace(3.0996033431592043, 24.796826745273634,20)
     trans_ = np.ones(20,)
-    sncosmo.Bandpass(wave_, trans_, name='epwxt')
+    band = sncosmo.Bandpass(wave_, trans_, name='epwxt')
+    sncosmo.register(band, 'epwxt',force=True)
 
-    wave_ = np.linspace(Hz2lam(keV2Hz(10)), Hz2lam(keV2Hz(0.5)),20)
+    wave_ = np.linspace(1.2398413372636818, 24.796826745273634,20)
     trans_ = np.ones(20,)
-    sncosmo.Bandpass(wave_, trans_, name='epfxt')
+    band = sncosmo.Bandpass(wave_, trans_, name='epfxt')
+    sncosmo.register(band, 'epfxt',force=True)
 
 def observed_SED():
     AllData.clear()
