@@ -28,5 +28,4 @@ def make_WXTPlan(wxt_filename:str,event_id='MS'):
 
     
 
-register_epband()
 
