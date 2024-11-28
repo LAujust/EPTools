@@ -13,6 +13,7 @@ import sncosmo
 from ligo.gracedb.rest import GraceDb
 import ligo.skymap
 import simsurvey
+from astropy.time import Time
 
 sys.path.append('$HEADAS/lib/python')
 

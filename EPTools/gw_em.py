@@ -21,10 +21,45 @@ def observed_SED():
     AllData.clear()
     pass
 
-def make_WXTPlan(wxt_filename:str,event_id='MS'):
+def make_EPPlan(filename:str,instrument:str):
+    zp = 25.
+    pointings = pd.read_csv(filename)
+        
+    if instrument == 'WXT':
+        width, height = np.sqrt(75), np.sqrt(75)
+        band = 'epwxt'
+        ra = pointings['Pointing RA']
+        dec = pointings['Pointing Dec']
+        expo = pointings['Exposure (s)']
+        time = Time(list(pointings['Obs Start Time (UTC)'].to_numpy()),format='isot', scale='utc').mjd
 
-    wxt_pointings = pd.read_csv(wxt_filename)
-    print(wxt_pointings)
+    elif instrument == 'FXT':
+        width, height = 1, 1
+        band = 'epfxt'
+        ra = pointings['Obj_RA']
+        dec = pointings['Obj_Dec']
+        expo = pointings['Exposure Time (s)']
+        time = Time(list(pointings['Obs Start Time (UTC) '].to_numpy()), format='iso', scale='utc').mjd
+    
+
+    mAB = EPexpo2mAB(expo,instrument=instrument)
+    zp = zp * np.ones(ra.shape)
+    band = [band] * len(ra)
+    skynoise = 10**(-0.4 * (mAB - zp)) / 5
+
+    plan = simsurvey.SurveyPlan(time=time,
+                                band=band,
+                                ra=ra,
+                                dec=dec,
+                                skynoise=skynoise,
+                                obs_ccd=None,
+                                zp=zp,
+                                comment=[' ']*len(ra),
+                                height=height,
+                                width=width
+                                )
+    
+    return plan
 
     
 
