@@ -1,19 +1,20 @@
 from .utils import *
 
 
-def plot_gcn_data(file_root='./',output='standard_gcn.pdf'):
+def plot_gcn_data(file_dir='',output='standard_gcn.pdf'):
     '''
     Plot GCN Circilar data and EP-WXT/FXT data from .csv file
-    
-    Data should be stored in .csv file 
 
     Data Format:
     
-    x_data.csv: [dt, instrument, flux, fluxerr, detection]
-    optical_data: [dt, telescope, mag, magerr, band, detection]
-    radio_data: [dt, instrument, flux, fluxerr, detection, frequency]  
+    data.csv: [dt, instrument, mag, magerr, flux, fluxerr, detection, type] 
     #flux in radio data often refers to flux density [mJy/uJy]
+    #type should be either optical, x-ray or radio
     '''
+
+    Alldata = pd.read_csv(file_dir).sort_values(by='dt').reset_index(drop=True)
+    types = np.unique(data['type'])
+    for ty in types:
+        data = Alldata[Alldata['type']==ty]
     
-    csv_files = glob.glob("*.csv")
 
