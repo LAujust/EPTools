@@ -16,5 +16,20 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf'):
     types = np.unique(data['type'])
     for ty in types:
         data = Alldata[Alldata['type']==ty]
+        t = data['dt']
+        if ty == 'optical':
+            y = data['mag']
+            yerr = data['magerr']
+            ylabel = 'mag'
+        elif ty == 'x-ray' or ty == 'radio':
+            y = data['flux']
+            yerr = data['fluxerr']
+            if ty == 'x-ray':
+                ylabel = r'flux $(erg\cdot s^{-1}\cdot cm^{-2})$'
+            else:
+                ylabel = r'$\mu Jy$'
+        else:
+            raise KeyError('Invalid observation type!')
+            
     
 
