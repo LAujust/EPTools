@@ -22,6 +22,8 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
     gs = fig.add_gridspec(len(types), hspace=0)
     ax = gs.subplots(sharex=True)
     tscale = 24*3600 if ttype ==1 else 1
+
+    ins_color = {'EP-WXT':'k','EP-FXT':'gray','XRT':'darkgreen'}
     
     for i,ty in enumerate(types):
         data = Alldata[Alldata['type']==ty]
@@ -32,7 +34,7 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
             uplim = [True if det[i]==0 else False for i in range(len(det))]
             bands = np.unique(data['band'])
             band = data['band']
-            cmap = plt.cm.get_cmap('hsv', len(bands))
+            cmap = plt.cm.get_cmap('gist_rainbow', len(bands))
             band_color = {band:mpl.colors.rgb2hex(cmap(i)) for i,band in enumerate(bands)}
             color = [band_color[b] for b in band]
             y = data['mag']
@@ -49,7 +51,6 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
             yerr = data['fluxerr']
             xerr = data['terr']*tscale
             instrument = data['instrument']
-            ins_color = {'EP-WXT':'k','EP-FXT':'gray','XRT':'darkgreen'}
             color = [ins_color[ins] for ins in instrument]
             label = instrument
             ax[i].set_yscale('log')
