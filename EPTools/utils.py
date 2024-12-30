@@ -14,6 +14,7 @@ from ligo.gracedb.rest import GraceDb
 import ligo.skymap
 import simsurvey
 from astropy.time import Time
+import xspec as xs
 
 sys.path.append('$HEADAS/lib/python')
 
@@ -58,10 +59,21 @@ def mag2flx(mags,lam_ref=None,FWHM=None):
         return 10**(-0.4*(mags+48.6))
     
 def mag2flx_sncosmo(mag,band):
+    '''
+    mag[float]:  AB magnitude
+    band[str]:   band name customized to sncosmo
+    
+    Output:
+    flux[float]:   in erg/s/cm^2
+    '''
     ab = sncosmo.get_magsystem('ab')
     flx = ab.band_mag_to_flux(mag,band)
+    band = sncosmo.get_bandpass(band)
+    wave_eff = band.wave_eff
+    nu_eff = lam2Hz(wave_eff)
+    e = (c.h*nu_eff*u.Hz).cgs.value
     #if you want to convert to erg you should multiple by e=(c.h*nu*u.Hz).cgs
-    return flx # in photons / s / cm^2
+    return e*flx
 
 
 def flx2mag(flxs):
@@ -106,6 +118,38 @@ def data2acs(data,out_dir):
     
     print(out)
     np.savetxt(out_dir,out)
+    
+def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs):
+    xs.Xset.abund = 'wilm'
+    xs.Fit.statMethod = 'cstat'
+    spec = xs.Spectrum(source_spec)
+    spec.ignore('**-%.1f %.1f-**'%(energy_l, energy_h))
+    spec.background = None
+    model = xs.Model('tbabs*cflux*powerlaw')
+    if not get_unabs:
+        model = xs.Model('cflux*tbabs*powerlaw')
+    model.TBabs.nH.values = nH
+    model.cflux.Emin = energy_l
+    model.cflux.Emax = energy_h
+    model.cflux.lg10Flux = -6.0
+    model.powerlaw.PhoIndex = PhoIndex
+    model.powerlaw.norm = 1.0
+    model.powerlaw.norm.frozen = True
+    fakeit_kwargs = {}
+    fakeit_kwargs['exposure'] = 10000
+    fakeit_kwargs['correction'] = 1.0
+    fakeit_kwargs['backExposure'] = 1.0
+    fakeit_kwargs['fileName'] = 'temp_fake.pha'
+    xs.AllData.fakeit(1, xs.FakeitSettings(**fakeit_kwargs))
+    spec = xs.AllData(1)
+    spec.ignore('**-%.1f %.1f-**'%(energy_l, energy_h))
+    spec.show()
+    model.show()
+    ctrt = spec.rate[-1]
+    flux = 10**(model.cflux.lg10Flux.values[0])
+    xs.AllModels.clear()
+    xs.AllData.clear()
+    return flux/ctrt
 
 
 def retrive_gracedb(query=''):
