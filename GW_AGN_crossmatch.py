@@ -26,14 +26,14 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
     coordinates = SkyCoord(milliquas_table_valid['RA']*u.deg, milliquas_table_valid['DEC']*u.deg, dist)
     result = crossmatch(skymap, coordinates)
     #print(milliquas_table_valid[result.searched_prob_vol < 0.9])
-    matched_milliquas = milliquas_table_valid[result.searched_prob_vol < 0.96]
+    matched_milliquas = milliquas_table_valid[result.searched_prob_vol < 0.95]
 
     wise_agn_table_valid = wise_agn_table[wise_agn_table['z']>0]
     dist = Planck18.luminosity_distance(wise_agn_table_valid['z'])
     coordinates = SkyCoord(wise_agn_table_valid['_RAJ2000']*u.deg, wise_agn_table_valid['_DEJ2000']*u.deg, dist)
     result = crossmatch(skymap, coordinates)
     #print(wise_agn_table_valid[result.searched_prob_vol < 0.9])
-    matched_wise = wise_agn_table_valid[result.searched_prob_vol < 0.96]
+    matched_wise = wise_agn_table_valid[result.searched_prob_vol < 0.95]
     matched_wise.rename_column('HMQ','NAME')
     for i in range(len(matched_wise)):
         if type(matched_wise['NAME'][i]) is not np.str_:
@@ -59,5 +59,5 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
 
 
 
-crossmatch_GW_with_cat('https://gracedb.ligo.org/api/superevents/S240413p/files/bayestar.multiorder.fits',
-                       '/Users/liangrunduo/EP/GW/crossmatch/S240413p_AGN.csv')
+crossmatch_GW_with_cat('https://gracedb.ligo.org/api/superevents/S250114ax/files/bayestar.fits.gz',
+                       '/Users/liangrunduo/EP/GW/crossmatch/S250114ax_AGN.csv')

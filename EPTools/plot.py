@@ -16,14 +16,19 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
     '''
 
     Alldata = pd.read_csv(file_dir).sort_values(by='dt').reset_index(drop=True)
-    types = np.unique(Alldata['type'])
+    raw_types = np.unique(Alldata['type'])
     
     fig = plt.figure(figsize=(11,9),dpi=200)
-    gs = fig.add_gridspec(len(types), hspace=0)
+    gs = fig.add_gridspec(len(raw_types), hspace=0)
     ax = gs.subplots(sharex=True)
     tscale = 24*3600 if ttype ==1 else 1
 
-    ins_color = {'EP-WXT':'k','EP-FXT':'gray','XRT':'darkgreen'}
+    ins_color = {'EP-WXT':'k','EP-FXT':'gray','XRT':'darkgreen',
+                 'ATCA-5.5 GHz':'brown','ATCA-9 GHz':'indianred','e-MERLIN-5 GHz':'peru'}
+    
+    #Re-order types in an order of X-ray, Optical, Radio
+    tyorder = {'x-ray': 0, 'optical': 1, 'radio': 2}
+    types = sorted(raw_types, key=lambda element: tyorder[element])
     
     for i,ty in enumerate(types):
         data = Alldata[Alldata['type']==ty]
@@ -47,6 +52,7 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
         elif ty == 'x-ray' or ty == 'radio':
             det = np.array(data['detection'])
             uplim = [True if det[i]==0 else False for i in range(len(det))]
+
             y = data['flux']
             yerr = data['fluxerr']
             xerr = data['terr']*tscale
@@ -62,7 +68,12 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
             raise KeyError('Invalid observation type!')
         
         for ti,yi,yerri,xerri,colori,uplimi,labeli in zip(t,y,yerr,xerr,color,uplim,label):
-            ax[i].errorbar(x=ti,y=yi,yerr=yerri,xerr=xerri,fmt='o',markersize=5,capsize=2,color=colori,lolims=uplimi,label=labeli)
+            if uplimi:
+                fmt = 'v'
+                xerri, yerri = None, None
+            else:
+                fmt = 'o'
+            ax[i].errorbar(x=ti,y=yi,yerr=yerri,xerr=xerri,fmt=fmt,markersize=5,capsize=2,color=colori,lolims=uplimi,label=labeli)
         ax[i].set_ylabel(ylabel)
         
         'Draw Legend'
@@ -73,7 +84,9 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
             if label not in label_list:
                 handle_list.append(handle)
                 label_list.append(label)
-        ax[i].legend(handle_list, label_list)
+        ncols = 2 if len(handle_list)>5 else 1
+        ax[i].legend(handle_list, label_list, ncols=ncols)
+        ax[i].autoscale()
 
         if i == len(types)-1:
             if ttype == 0:
