@@ -15,6 +15,7 @@ import ligo.skymap
 import simsurvey
 from astropy.time import Time
 import xspec as xs
+import re
 
 sys.path.append('$HEADAS/lib/python')
 
