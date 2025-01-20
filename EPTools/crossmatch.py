@@ -3,7 +3,7 @@ from astropy.cosmology import Planck18
 from astroquery.vizier import Vizier, VizierClass
 from ligo.skymap.postprocess import crossmatch
 from ligo.skymap.io.fits import read_sky_map
-from astropy.table import Table, join, join_skycoord
+from astropy.table import Table, join, join_skycoord, vstack
 
 class Crossmatch(object):
     def __init__(self):
@@ -83,8 +83,8 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
     """
 
     #Load Cat
-    wise_agn_table = Table.read("/Users/liangrunduo/EP/Catalogue/WISE_AGN.csv", format="csv")
-    milliquas_table = Table.read("/Users/liangrunduo/EP/Catalogue/Milliquas.csv", format="csv")
+    wise_agn_table = Table.read("/Users/liangrunduo/Desktop/Aujust/NAOC/EP/Crossmatch/catalogs/WISE_AGN.csv", format="csv")
+    milliquas_table = Table.read("/Users/liangrunduo/Desktop/Aujust/NAOC/EP/Crossmatch/catalogs/Milliquas.csv", format="csv")
     skymap = read_sky_map(skymap_dir,moc=True)
     #skymap = read_sky_map('/Users/liangrunduo/EP/GW/S241102br_skymap.fits',moc=True)
     milliquas_table_valid = milliquas_table[milliquas_table['Z']>0]
@@ -109,7 +109,10 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
     # matched_milliquas.write('/Users/liangrunduo/EP/GW/crossmatch/S240413p_milliquas.csv',format='csv',overwrite=True)
     # matched_wise.write('/Users/liangrunduo/EP/GW/crossmatch/S240413p_wise.csv',format='csv',overwrite=True)
 
-    matched_all = join(matched_milliquas, matched_wise, keys='NAME',join_type='outer')
+    if len(matched_milliquas) * len(matched_wise) > 0:
+        matched_all = join(matched_milliquas, matched_wise, keys='NAME',join_type='outer')
+    else:
+        matched_all = vstack([matched_milliquas,matched_wise])
     print(matched_all)
     
     for i in range(len(matched_all)):
