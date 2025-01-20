@@ -59,5 +59,5 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
 
 
 
-crossmatch_GW_with_cat('https://gracedb.ligo.org/api/superevents/S250114ax/files/bayestar.fits.gz',
-                       '/Users/liangrunduo/EP/GW/crossmatch/S250114ax_AGN.csv')
+crossmatch_GW_with_cat('https://gracedb.ligo.org/api/superevents/S250119cv/files/Bilby.multiorder.fits',
+                       '/Users/liangrunduo/EP/GW/crossmatch/S250119cv_AGN.csv')
