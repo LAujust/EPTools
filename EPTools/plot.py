@@ -99,3 +99,74 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
     plt.savefig(output,dpi=300)
     
 
+
+
+def xspec_plot(data,save_dir=None,fignum=None,leg=None,sep=True):
+
+    if isinstance(data,tuple):
+        energies,edeltas,rates,errors,model,labels = data
+        nE = len(energies)
+        stepenergies = list()
+        for i in range(nE):
+            stepenergies.append(energies[i] - edeltas[i])
+        stepenergies.append(energies[-1]+edeltas[-1])
+        model.append(model[-1])
+
+        #plt.yscale('log')
+        fig, ax = plt.subplots(figsize=(9,6),dpi=100)
+        plt.xscale('log')
+        plt.xlabel(labels[0])
+        plt.ylabel(labels[1])
+        plt.title(labels[2])
+        plt.errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
+        plt.step(stepenergies,model,where='post',color='royalblue')
+        plt.legend()
+        plt.grid()
+        if save_dir:
+            plt.savefig(save_dir,dpi=300)
+        else:
+            plt.show()
+
+
+    elif isinstance(data,list) and isinstance(data[0],tuple):
+        if sep:
+            rows = len(data)
+            fignum = np.arange(0,rows,1)
+        else:
+            rows = len(np.unique(fignum))
+
+        fig = plt.figure(figsize=(5.5*rows,8))
+        gs = fig.add_gridspec(rows, hspace=0)
+        ax = gs.subplots(sharex=True)
+        cmap = plt.cm.get_cmap('gist_rainbow', len(data))
+        random_color = [mpl.colors.rgb2hex(cmap(i)) for i in range(len(data))]
+
+        for i in range(len(data)):
+            energies,edeltas,rates,errors,model,labels = data[i]
+            ax_i = fignum[i]
+            nE = len(energies)
+            stepenergies = list()
+            for j in range(nE):
+                stepenergies.append(energies[j] - edeltas[j])
+            stepenergies.append(energies[-1]+edeltas[-1])
+            model.append(model[-1])
+
+
+            ax[ax_i].set_ylabel(labels[1])
+            ax[ax_i].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=leg[i])
+            ax[ax_i].step(stepenergies,model,where='post',color='k')
+            ax[ax_i].legend()
+            if ax_i == rows-1:
+                ax[ax_i].set_xscale('log')
+                ax[ax_i].set_xlabel(labels[0])
+            elif ax_i == 0:
+                ax[ax_i].set_title(labels[2])
+
+        if save_dir:
+            plt.savefig(save_dir,dpi=300)
+        else:
+            plt.show()
+
+
+
+
