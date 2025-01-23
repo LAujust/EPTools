@@ -106,7 +106,23 @@ def lum2flux(L,d):
     f = L/(4*pi*d**2)
     return f.cgs.value 
 
-def data2acs(data,out_dir):
+def lcurve2acs(data_dir,out_dir):
+    data = np.loadtxt(data_dir,skiprows=3)
+    t, t_err, cr, cr_err = data[:,0], data[:,1], data[:,2], data[:,3]
+    
+    tstart = t - t_err[0]
+    tstop = t + t_err[0]
+    
+    third = cr*(tstop-tstart)
+    fourth = cr_err*(tstop-tstart)
+    
+    out = np.vstack((tstart,tstop,third,fourth)).T
+    print(out.shape)
+    np.savetxt(out_dir,out)
+    return out
+
+def fplot2acs(data_dir,out_dir):
+    data = np.loadtxt(data_dir,skiprows=3)
     t, cr, cr_err = data[:,0], data[:,1], data[:,2]
     
     tstart = t
@@ -117,7 +133,6 @@ def data2acs(data,out_dir):
     
     out = np.vstack((tstart,tstop,third,fourth)).T
     
-    print(out)
     np.savetxt(out_dir,out)
     
 def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs):
