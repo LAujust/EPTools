@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
-import glob
-import sys, os
+import sys, os, glob, re
 import astropy.units as u
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
@@ -14,8 +13,12 @@ from ligo.gracedb.rest import GraceDb
 import ligo.skymap
 import simsurvey
 from astropy.time import Time
-import xspec as xs
-import re
+try:
+    import xspec as xs
+except ImportError:
+    print('pyXspec is not imported correctly.')
+except:
+    print('Error occured during import.')
 
 sys.path.append('$HEADAS/lib/python')
 
@@ -106,7 +109,7 @@ def lum2flux(L,d):
     f = L/(4*pi*d**2)
     return f.cgs.value 
 
-def lcurve2acs(data_dir,out_dir):
+def lcurve2pha(data_dir,out_dir):
     data = np.loadtxt(data_dir,skiprows=3)
     t, t_err, cr, cr_err = data[:,0], data[:,1], data[:,2], data[:,3]
     
@@ -117,11 +120,10 @@ def lcurve2acs(data_dir,out_dir):
     fourth = cr_err*(tstop-tstart)
     
     out = np.vstack((tstart,tstop,third,fourth)).T
-    print(out.shape)
     np.savetxt(out_dir,out)
     return out
 
-def fplot2acs(data_dir,out_dir):
+def fplot2pha(data_dir,out_dir):
     data = np.loadtxt(data_dir,skiprows=3)
     t, cr, cr_err = data[:,0], data[:,1], data[:,2]
     
@@ -134,8 +136,9 @@ def fplot2acs(data_dir,out_dir):
     out = np.vstack((tstart,tstop,third,fourth)).T
     
     np.savetxt(out_dir,out)
+    return out
     
-def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs):
+def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs=True):
     xs.Xset.abund = 'wilm'
     xs.Fit.statMethod = 'cstat'
     spec = xs.Spectrum(source_spec)

@@ -4,6 +4,8 @@ import dynesty
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
+    !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
+    list of sname
     Args:
         sname[str/list]: spectrum file
         mname (str): model name
