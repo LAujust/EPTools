@@ -1,6 +1,5 @@
 from .utils import *
 import dynesty
-from fuzzywuzzy import fuzz
 
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
     """
@@ -109,6 +108,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,instrument
     return output
 
 
-def dynesty_fitting():
+def dynesty_fitting(prior_transform, log_likeli,bounds,nlive,log_args):
+
     pass
 
