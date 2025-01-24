@@ -231,6 +231,9 @@ def BNS_ejecta_mass(Mc, q, R1, R2, Mtov):
 def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
+
+def TA_quick(dir):
+    pass
     
     
     
