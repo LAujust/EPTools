@@ -1,6 +1,7 @@
 from .utils import *
 import matplotlib.pyplot as plt
 import matplotlib as mpl
+from astropy.io import fits
 
 
 def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
@@ -168,5 +169,52 @@ def xspec_plot(data,save_dir=None,fignum=None,leg=None,sep=True):
             plt.show()
 
 
+def plot_lcurve(src,bkg,save_dir,binsize=10,scale=1./12):
+    with fits.open(src) as hdu:
+#        TSTART = hdu[0].header['TSTART']
+        DATE_OBS = hdu[0].header['DATE-OBS']
+        data = hdu[1].data
+        TIME = data['TIME']
+        RATE = data['RATE']
+        ERROR = data['ERROR']
+    with fits.open(bkg) as hdu:
+        bkg = hdu[1].data
+        TIME_bkg = bkg['TIME']
+        RATE_bkg = bkg['RATE']
+        ERROR_bkg = bkg['ERROR']
 
+    t,rate,error = [],[],[]
+    t_bkg,rate_bkg,error_bkg = [],[],[] #Scaled
+    #Rebin
+    pin = TIME[0]
+    while pin+binsize < TIME[-1]:
+        idx = np.where((TIME>pin) & (TIME<pin+binsize))[0]
+        true_size = len(idx)
+        if true_size == 0:
+            pin += binsize
+            continue
+        else:
+            t.append(sum(TIME[idx])/true_size)
+            rate.append(sum(RATE[idx])/true_size)
+            error.append(np.sqrt(sum(ERROR[idx]**2))/true_size)
+            rate_bkg.append(scale*sum(RATE_bkg[idx])/true_size)
+            error_bkg.append(scale*np.sqrt(sum(ERROR_bkg[idx]**2))/true_size)
+            pin += binsize
+
+    fig = plt.figure(dpi=100,figsize=(8,7))
+    gs = fig.add_gridspec(2, hspace=0,height_ratios=[1.5,1])
+    ax = gs.subplots(sharex=True)
+
+    ax[1].errorbar(t,rate,yerr=error,color='steelblue',fmt='.',label='Tot')
+    ax[0].errorbar(t,rate_bkg,yerr=error_bkg,color='grey',fmt='.',label='Scaled bkg')
+    ax[0].errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
+                color='crimson',fmt='.',label='Net')
+    ax[0].legend()
+    ax[1].legend()
+    ax[0].grid()
+    ax[1].grid()
+    ax[0].set_ylabel('counts/s')
+    ax[1].set_ylabel('counts/s')
+    ax[1].set_xlabel('$\mathrm{T-T_{0}}=$'+'{}'.format(DATE_OBS))
+    plt.savefig(save_dir,dpi=300)
 

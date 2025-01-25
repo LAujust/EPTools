@@ -1,7 +1,7 @@
 from .utils import *
 import dynesty
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -73,8 +73,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,instrument
     #Fit
     xs.Fit.renorm('auto')
     xs.Fit.nIterations = 300
-    xs.Fit.statMethod = "cstat"
-    xs.Fit.statMethod = "chi"
+    xs.Fit.statMethod = stat
     xs.Fit.perform()
     xs.Fit.goodness(200)
     xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(el,eh))
