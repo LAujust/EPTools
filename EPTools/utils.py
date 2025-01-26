@@ -13,6 +13,8 @@ from ligo.gracedb.rest import GraceDb
 import ligo.skymap
 import simsurvey
 from astropy.time import Time
+from .plot import *
+from .fit import *
 try:
     import xspec as xs
 except ImportError:
@@ -232,9 +234,18 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
 
-def TA_quick(dir):
-    pass
-    
+def TA_quick(obsid,snum,root='./'):
+    """
+    obsid[str]: e.g. ep06800000356wxt45
+    """
+    #Designed for WXT
+    #Plot curve
+
+    lc_src = os.path.join(root,obsid)+snum+'.lc'
+    lc_bkg = os.path.join(root,obsid)+snum+'bk.lc'
+    pha_src = os.path.join(root,obsid)+snum+'.pha'
+    arf = os.path.join(root,obsid)+snum+'.arf'
+    rmf = os.path.join(root,obsid)+'.rmf'
     
     
 #========================================================================#
