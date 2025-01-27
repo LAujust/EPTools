@@ -15,13 +15,8 @@ import simsurvey
 from astropy.time import Time
 from .plot import *
 from .fit import *
-try:
-    import xspec as xs
-except ImportError:
-    print('pyXspec is not imported correctly.')
-except:
-    print('Error occured during import.')
-
+sys.path.append('/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/python')
+import xspec as xs
 sys.path.append('$HEADAS/lib/python')
 
 def keV2Hz(kevs):
@@ -234,7 +229,7 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
 
-def TA_quick(obsid,snum,root='./'):
+def TA_quick(obsid,snum,root='./',binsize=10,rebin=2):
     """
     obsid[str]: e.g. ep06800000356wxt45
     """
@@ -246,6 +241,18 @@ def TA_quick(obsid,snum,root='./'):
     pha_src = os.path.join(root,obsid)+snum+'.pha'
     arf = os.path.join(root,obsid)+snum+'.arf'
     rmf = os.path.join(root,obsid)+'.rmf'
+
+    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf')
+    
+    mpw = 'tbabs*cflux*powerlaw'
+    mbb = 'tbabs*cflux*bbody'
+
+    fitted_data = xspec_fitting(pha_src,mname=mpw,grp=False,arf=arf,rmf=rmf,rebin=rebin,instrument='WXT',plotmode='edata',**{'powerlaw.norm':1})
+    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_pw.pdf',leg='Powerlaw')
+
+    fitted_data = xspec_fitting(pha_src,mname=mbb,grp=False,arf=arf,rmf=rmf,instrument='WXT',rebin=rebin,plotmode='edata',**{'bbody.norm':1})
+    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_bb.pdf',leg='Powerlaw')
+
     
     
 #========================================================================#

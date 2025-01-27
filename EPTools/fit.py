@@ -1,5 +1,6 @@
 from .utils import *
 import dynesty
+import xspec as xs
 
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
     """
@@ -66,6 +67,11 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
     if untied:
         for par,value in untied.items():
             exec('xs.AllModels({}).{}={}'.format(value[0],par,value[1]))
+    try:
+        m.cflux.Emin = el
+        m.cflux.Emax = eh
+    except:
+        pass
         
     xs.AllModels.show()
     xs.AllData.show()
