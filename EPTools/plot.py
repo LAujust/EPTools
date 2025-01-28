@@ -208,7 +208,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12):
     ax.errorbar(t,rate,yerr=error,color='steelblue',fmt='.',alpha=0.7,label='Src')
     ax.errorbar(t,rate_bkg,yerr=error_bkg,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
     ax.errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
-                color='coral',alpha=0.7,fmt='.',label='Net')
+                color='darkorange',alpha=0.7,fmt='.',label='Net')
     ax.legend()
     ax.grid()
     ax.set_ylabel('counts/s')

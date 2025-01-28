@@ -19,6 +19,7 @@ sys.path.append('/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/
 import xspec as xs
 sys.path.append('$HEADAS/lib/python')
 
+
 def keV2Hz(kevs):
     return 2.417990504024e+17 * kevs
 
