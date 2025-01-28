@@ -201,21 +201,18 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12):
             error_bkg.append(scale*np.sqrt(sum(ERROR_bkg[idx]**2))/true_size)
             pin += binsize
 
-    fig = plt.figure(dpi=100,figsize=(8,7))
-    gs = fig.add_gridspec(2, hspace=0,height_ratios=[1.5,1])
-    ax = gs.subplots(sharex=True)
+    fig, ax = plt.subplots(dpi=100,figsize=(8,7))
+    # gs = fig.add_gridspec(2, hspace=0,height_ratios=[1.5,1])
+    # ax = gs.subplots(sharex=True)
 
-    ax[1].errorbar(t,rate,yerr=error,color='steelblue',fmt='.',label='Tot')
-    ax[0].errorbar(t,rate_bkg,yerr=error_bkg,color='grey',fmt='.',label='Scaled bkg')
-    ax[0].errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
-                color='crimson',fmt='.',label='Net')
-    ax[0].legend()
-    ax[1].legend()
-    ax[0].grid()
-    ax[1].grid()
-    ax[0].set_ylabel('counts/s')
-    ax[1].set_ylabel('counts/s')
-    ax[1].set_xlabel('$\mathrm{T-T_{0}}=$'+'{}'.format(DATE_OBS))
+    ax.errorbar(t,rate,yerr=error,color='steelblue',fmt='.',alpha=0.7,label='Src')
+    ax.errorbar(t,rate_bkg,yerr=error_bkg,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
+    ax.errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
+                color='coral',alpha=0.7,fmt='.',label='Net')
+    ax.legend()
+    ax.grid()
+    ax.set_ylabel('counts/s')
+    ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{}'.format(DATE_OBS))
     if save_dir:
         plt.savefig(save_dir,dpi=300)
     else:
