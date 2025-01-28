@@ -230,7 +230,7 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
 
-def TA_quick(obsid,snum,root='./',binsize=10,rebin=2):
+def TA_quick(obsid,snum,root='./',binsize=10,rebin=2,rx=None):
     """
     obsid[str]: e.g. ep06800000356wxt45
     """
@@ -243,7 +243,7 @@ def TA_quick(obsid,snum,root='./',binsize=10,rebin=2):
     arf = os.path.join(root,obsid)+snum+'.arf'
     rmf = os.path.join(root,obsid)+'.rmf'
 
-    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf')
+    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',rx=rx)
     
     mpw = 'tbabs*cflux*powerlaw'
     mbb = 'tbabs*cflux*bbody'
@@ -252,7 +252,7 @@ def TA_quick(obsid,snum,root='./',binsize=10,rebin=2):
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_pw.pdf',leg='Powerlaw')
 
     fitted_data = xspec_fitting(pha_src,mname=mbb,grp=False,arf=arf,rmf=rmf,instrument='WXT',rebin=rebin,plotmode='edata',**{'bbody.norm':1})
-    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_bb.pdf',leg='Powerlaw')
+    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_bb.pdf',leg='Bbody')
 
     
     
