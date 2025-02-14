@@ -15,7 +15,7 @@ class Crossmatch(object):
                                          'xmmstackob',
                                          ]
     
-
+    
     def xmm_slew_archive(self,pos,radius=3*u.arcmin):
         return self.xmatch_archive(pos=pos,radius=radius,mission='xmmslewful')
 
