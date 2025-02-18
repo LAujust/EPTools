@@ -39,7 +39,7 @@ def make_EPPlan(filename:str,instrument:str):
         ra = pointings['Obj_RA']
         dec = pointings['Obj_Dec']
         expo = pointings['Exposure Time (s)']
-        time = Time(list(pointings['Obs Start Time (UTC) '].to_numpy()), format='iso', scale='utc').mjd
+        time = Time(list(pointings['Obs Start Time (UTC) '].to_numpy()), scale='utc').mjd
     
 
     mAB = EPexpo2mAB(expo,instrument=instrument)
