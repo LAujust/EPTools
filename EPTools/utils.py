@@ -137,6 +137,19 @@ def fplot2pha(data_dir,out_dir):
     return out
     
 def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs=True):
+    """_summary_
+
+    Args:
+        source_spec (_type_): _description_
+        energy_l (_type_): _description_
+        energy_h (_type_): _description_
+        nH (_type_): _description_
+        PhoIndex (_type_): _description_
+        get_unabs (bool, optional): _description_. Defaults to True.
+
+    Returns:
+        _type_: _description_
+    """
     xs.Xset.abund = 'wilm'
     xs.Fit.statMethod = 'cstat'
     spec = xs.Spectrum(source_spec)
