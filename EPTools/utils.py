@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import sys, os, glob, re
 import astropy.units as u
+import subprocess
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
 from astropy.coordinates import SkyCoord
@@ -16,8 +17,8 @@ from astropy.time import Time
 from .plot import *
 from .fit import *
 sys.path.append('/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/python')
-import xspec as xs
 sys.path.append('$HEADAS/lib/python')
+import xspec as xs
 
 
 def keV2Hz(kevs):

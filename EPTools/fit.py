@@ -2,6 +2,19 @@ from .utils import *
 import dynesty
 import xspec as xs
 
+
+def grp_data(sname,outputname,arf=None,rmf=None,group=1):
+    cmd = ['grppha',sname,outputname]
+    comm = "'comm='group min %s "%group
+    if arf:
+        comm + "& chkey ANCRFILE %s"%arf
+    if rmf:
+        comm += "& chkey RESPFILE %s"%rmf
+    comm + "& bad 0-29 & exit'"
+    cmd.append(comm)
+    print(cmd)
+    subprocess.call(cmd)
+
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
