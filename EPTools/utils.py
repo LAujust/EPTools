@@ -246,8 +246,21 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
 
 def TA_quick(obsid,snum,root='./',binsize=10,rebin=2,rx=None,ins='WXT'):
     """
-    obsid[str]: e.g. ep06800000356wxt45
+    Perform quick analysis for TA.
+
+    Args:
+    - obsid : str : e.g. ep06800000356wxt45
+    - snum : int : Source number
+    - root (str, optional): Root directory of Grace data. Defaults to './'.
+    - binsize (int, optional): Size of bin in seconds. Defaults to 10.
+    - rebin (int, optional): Rebin factor. Defaults to 2.
+    - rx (float, optional): refine x range.
+    - ins (str, optional): Instrument name. Defaults to 'WXT'.
     """
+    #Designed for FXT
+    #Plot curve
+    snum = str(snum)
+    lc_src = os.path.join(root,obsid)+snum+'.lc'
     #Designed for WXT
     #Plot curve
     snum = str(snum)
