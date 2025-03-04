@@ -1,8 +1,8 @@
 __version__ = '0.01'
 
-#from . import utils
+import utils
 from .utils import *
-from .crossmatch import Crossmatch
+from .crossmatch import *
 from .model import *
 from .plot import *
 from .gw_em import *

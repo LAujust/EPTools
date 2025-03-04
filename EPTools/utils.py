@@ -235,6 +235,18 @@ def EPexpo2mAB(expo,instrument:str):
         raise KeyError('Please type correct instrument name!')
     
     return X2mAB(F_X,nu_min,nu_max)
+
+def register_epband():
+    'Register X-ray filter:: epwxt, epfxt'
+    wave_ = np.linspace(3.0996033431592043, 24.796826745273634,20)
+    trans_ = np.ones(20,)
+    band = sncosmo.Bandpass(wave_, trans_, name='epwxt')
+    sncosmo.register(band, 'epwxt',force=True)
+
+    wave_ = np.linspace(1.2398413372636818, 24.796826745273634,20)
+    trans_ = np.ones(20,)
+    band = sncosmo.Bandpass(wave_, trans_, name='epfxt')
+    sncosmo.register(band, 'epfxt',force=True)
     
 
 def BNS_ejecta_mass(Mc, q, R1, R2, Mtov):
