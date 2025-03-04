@@ -18,7 +18,7 @@ from .plot import *
 from .fit import *
 sys.path.append('/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/python')
 sys.path.append('$HEADAS/lib/python')
-import xspec as xs
+import xspec as xs # type: ignore
 
 
 def keV2Hz(kevs):
