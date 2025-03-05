@@ -256,7 +256,7 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
 
-def TA_quick(obsid,snum,root='./',binsize=10,rebin=2,rx=None,ins='WXT'):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,group=None,rx=None,ins='WXT'):
     """
     Perform quick analysis for TA.
 
@@ -281,21 +281,31 @@ def TA_quick(obsid,snum,root='./',binsize=10,rebin=2,rx=None,ins='WXT'):
     pha_src = os.path.join(root,obsid)+snum+'.pha'
     arf = os.path.join(root,obsid)+snum+'.arf'
     rmf = os.path.join(root,obsid)+'.rmf'
-    print(rmf)
+    if pha_file:
+        pha_src = pha_file
 
     lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',rx=rx)
     
     mpw = 'tbabs*cflux*powerlaw'
     mbb = 'tbabs*cflux*bbody'
     mapec = 'tbabs*cflux*apec'
+    
+    if grp and not pha_file:
+        pha_grp_src = 'PC.pi'
+        if os.path.exists(pha_grp_src):
+            os.remove(pha_grp_src)
+        print(pha_grp_src)
+        grp_data(pha_src,outputname=pha_grp_src,arf=arf,rmf=rmf,group=group)
+        pha_src = pha_grp_src
 
-    fitted_data = xspec_fitting(pha_src,mname=mpw,grp=False,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='edata',**{'powerlaw.norm':1})
+        
+    fitted_data = xspec_fitting(pha_src,mname=mpw,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='edata',**{'powerlaw.norm':1})
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_pw.pdf',leg='Powerlaw')
 
-    fitted_data = xspec_fitting(pha_src,mname=mbb,grp=False,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='edata',**{'bbody.norm':1})
+    fitted_data = xspec_fitting(pha_src,mname=mbb,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='edata',**{'bbody.norm':1})
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_bb.pdf',leg='Bbody')
     
-    fitted_data = xspec_fitting(pha_src,mname=mapec,grp=False,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='edata',**{'apec.norm':1})
+    fitted_data = xspec_fitting(pha_src,mname=mapec,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='edata',**{'apec.norm':1})
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_apec.pdf',leg='Apec')
 
     

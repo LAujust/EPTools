@@ -4,16 +4,16 @@ import xspec as xs
 
 
 def grp_data(sname,outputname,arf=None,rmf=None,group=1):
-    cmd = ['grppha',sname,outputname]
-    comm = "'comm='group min %s "%group
+    cmd = ['grppha %s %s'%(sname,outputname)]
+    comm = "comm='group min %s "%group
     if arf:
-        comm + "& chkey ANCRFILE %s"%arf
+        comm += " & chkey ANCRFILE %s"%arf
     if rmf:
-        comm += "& chkey RESPFILE %s"%rmf
-    comm + "& bad 0-29 & exit'"
+        comm += " & chkey RESPFILE %s"%rmf
+    comm += " & bad 0-29 & exit'"
     cmd.append(comm)
     print(cmd)
-    subprocess.call(cmd)
+    subprocess.run(cmd,capture_output=True, text=True)
 
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
     """
@@ -94,7 +94,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
     xs.Fit.nIterations = 300
     xs.Fit.statMethod = stat
     xs.Fit.perform()
-    xs.Fit.goodness(200)
+    # xs.Fit.goodness(200)
     xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(el,eh))
     
     
