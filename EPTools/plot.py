@@ -102,25 +102,31 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
 
 
 
-def xspec_plot(data,save_dir=None,fignum=None,leg=None,sep=True):
+def xspec_plot(data,save_dir=None,fignum=None,leg=None):
 
     if isinstance(data,tuple):
-        energies,edeltas,rates,errors,model,labels = data
+        energies,edeltas,rates,errors,model,resid,residerr,labels = data
         nE = len(energies)
         stepenergies = list()
         for i in range(nE):
             stepenergies.append(energies[i] - edeltas[i])
         stepenergies.append(energies[-1]+edeltas[-1])
         model.append(model[-1])
+        resid.append(resid[-1])
 
         #plt.yscale('log')
-        fig, ax = plt.subplots(figsize=(9,6),dpi=100)
+        rows = 2
+        fig = plt.figure(figsize=(5.5*rows,8))
+        gs = fig.add_gridspec(rows, hspace=0, height_ratios=[3,1])
+        ax = gs.subplots(sharex=True)
         plt.xscale('log')
-        plt.xlabel(labels[0])
-        plt.ylabel(labels[1])
+        plt.yscale('log')
+        ax[0].xlabel(labels[0])
+        ax[0].ylabel(labels[1])
         plt.title(labels[2])
-        plt.errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
-        plt.step(stepenergies,model,where='post',color='royalblue')
+        ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
+        ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color='dimgrey',fmt='.')
+        ax[0].step(stepenergies,model,where='post',color='royalblue')
         plt.legend()
         plt.grid()
         if save_dir:
@@ -130,21 +136,16 @@ def xspec_plot(data,save_dir=None,fignum=None,leg=None,sep=True):
 
 
     elif isinstance(data,list) and isinstance(data[0],tuple):
-        if sep:
-            rows = len(data)
-            fignum = np.arange(0,rows,1)
-        else:
-            rows = len(np.unique(fignum))
-
+        rows = 2
         fig = plt.figure(figsize=(5.5*rows,8))
-        gs = fig.add_gridspec(rows, hspace=0)
+        gs = fig.add_gridspec(rows, hspace=0, height_ratios=[3,1])
         ax = gs.subplots(sharex=True)
-        cmap = plt.cm.get_cmap('gist_rainbow', len(data))
-        random_color = [mpl.colors.rgb2hex(cmap(i)) for i in range(len(data))]
+        cmap = plt.cm.get_cmap('gist_rainbow',30)
+        rand_color_idx = np.random.randint(0,30,len(data))
+        random_color = [mpl.colors.rgb2hex(cmap(i)) for i in rand_color_idx]
 
         for i in range(len(data)):
-            energies,edeltas,rates,errors,model,labels = data[i]
-            ax_i = fignum[i]
+            energies,edeltas,rates,errors,model,resid,residerr,labels = data[i]
             nE = len(energies)
             stepenergies = list()
             for j in range(nE):
@@ -153,15 +154,19 @@ def xspec_plot(data,save_dir=None,fignum=None,leg=None,sep=True):
             model.append(model[-1])
 
 
-            ax[ax_i].set_ylabel(labels[1])
-            ax[ax_i].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=leg[i])
-            ax[ax_i].step(stepenergies,model,where='post',color='k')
-            ax[ax_i].legend()
-            if ax_i == rows-1:
-                ax[ax_i].set_xscale('log')
-                ax[ax_i].set_xlabel(labels[0])
-            elif ax_i == 0:
-                ax[ax_i].set_title(labels[2])
+            ax[0].set_ylabel(labels[1])
+            ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=leg[i])
+            ax[0].step(stepenergies,model,where='post',color='dimgrey')
+            ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color=random_color[i],fmt='.')
+            ax[1].set_ylabel
+            ax[0].legend()
+            ax[0].set_xscale('log')
+            ax[0].set_yscale('log')
+            ax[1].set_xlabel(labels[0])
+            ax[1].set_ylabel('Residual')
+            ax[0].set_title(labels[2])
+            
+        ax[1].hlines(0.0,0.0,10.0,ls='dashed',color='maroon')
 
         if save_dir:
             plt.savefig(save_dir,dpi=300)

@@ -15,7 +15,7 @@ def grp_data(sname,outputname,arf=None,rmf=None,group=1):
     print(cmd)
     subprocess.run(cmd,capture_output=True, text=True)
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument:str='WXT',untied=None,plotmode='data',**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -27,7 +27,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
         arf (str/list, optional): anxilury file
         rmf (str/list, optional): reponse file
         rebin (float, optional): rebin
-        instrument (str, optional): 'WXT' or 'FXT'
+        instrument (str or list, optional): 'WXT' or 'FXT'
         plotmode (str, optional): xspec plot mode (e.g. data, ldata, edata)
         untied (dict): untied parameters. The elements are parName:[mNum,value], e.g. {'tbabs.nH':[2,0.1]}
         fixed_par: fixed parameters. Second and third, forth model parameters are the same with the first one by default
@@ -37,13 +37,8 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
     """
     
     xs.Xset.allowNewAttributes = True
-    
-    if instrument == 'WXT':
-        el, eh = 0.5, 4
-    elif instrument == 'FXT':
-        el, eh = 0.5, 10
-    else:
-        raise KeyError('Input Valid Instrument Type')
+
+    erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
     
 
     if isinstance(sname,str):
@@ -55,6 +50,8 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
             s = xs.Spectrum(sname,arfFile=arf,respFile=rmf)
         else:
             s = xs.Spectrum(sname)
+        xs.AllData.ignore("bad")
+        xs.AllData.ignore("0.0-{:.1f} {:.1f}-**".format(erange[instrument][0],erange[instrument][1])) 
     elif isinstance(sname,list):
         for i, sn in enumerate(sname):
             if not grp:
@@ -63,28 +60,29 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
                 if not rmf:
                     rmf = re.sub(r'\.(pha|pi)$', '.rmf', sname)
 
-                xs.AllData(sn)
-                xs.AllData(i+1).response.arf = arf[i]
-                xs.AllData(i+1).response.rmf = rmf[i]
+                si = xs.AllData(sn,arfFile=arf[i],respFile=rmf[i])
+                si.ignore("bad")
+                si.ignore("0.0-{:.1f} {:.1f}-**".format(erange[instrument[i]][0],erange[instrument[i]][1]))
+                # xs.AllData(sn)
+                # xs.AllData(i+1).response.arf = arf[i]
+                # xs.AllData(i+1).response.rmf = rmf[i]
             else:
                 xs.AllData('{}:{} {}'.format(i+1,i+1,sn))
-            
-    xs.AllData.ignore("bad")
-    xs.AllData.ignore("0.0-{:.1f} {:.1f}-**".format(el,eh))
+                xs.AllData(i+1).ignore("bad")
+                xs.AllData(i+1).ignore("0.0-{:.1f} {:.1f}-**".format(erange[instrument[i]][0],erange[instrument[i]][1]))
+        
             
     #Load Model and freeze parameters
     m = xs.Model(mname)
+    # if isinstance(sname,list):
+    #     for i in range(len(sname)):
+    #         exec('m%s = AllModels(%s)'%(i+1,i+1))
     for key,value in fixed_par.items():
         exec('m.{}={}'.format(key,value))
         exec('m.{}.frozen=True'.format(key))
     if untied:
         for par,value in untied.items():
             exec('xs.AllModels({}).{}={}'.format(value[0],par,value[1]))
-    try:
-        m.cflux.Emin = el
-        m.cflux.Emax = eh
-    except:
-        pass
         
     xs.AllModels.show()
     xs.AllData.show()
@@ -95,7 +93,11 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
     xs.Fit.statMethod = stat
     xs.Fit.perform()
     # xs.Fit.goodness(200)
-    xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(el,eh))
+    if isinstance(sname,str):
+        xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument][0],erange[instrument][1]))
+    else:
+        for i in range(len(sname)):
+            xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument[i]][0],erange[instrument[i]][1]))
     
     
     #Plot data
@@ -111,7 +113,9 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
         errors = xs.Plot.yErr(1,1)
         labels = xs.Plot.labels()
         model = xs.Plot.model()
-        output = (energies,edeltas,rates,errors,model,labels)
+        resid = xs.Plot.y(1,2)
+        residerr = xs.Plot.yErr(1,2)
+        output = (energies,edeltas,rates,errors,model,resid,residerr,labels)
     elif isinstance(sname,list):
         output = []
         labels = xs.Plot.labels()
@@ -121,7 +125,9 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
             rates = xs.Plot.y(i+1,1)
             errors = xs.Plot.yErr(i+1,1)
             model = xs.Plot.model(i+1)
-            output.append((energies,edeltas,rates,errors,model,labels))
+            resid = xs.Plot.y(i+1,2)
+            residerr = xs.Plot.yErr(i+1,2)
+            output.append((energies,edeltas,rates,errors,model,resid,residerr,labels))
     
     xs.AllModels.clear()
     xs.AllData.clear()
