@@ -3,6 +3,14 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 from astropy.io import fits
 
+DEFAULT_COLORS = ['#002FA7','#FFE76F',
+                  '#01847F','#F9D2E4',
+                  '#FF0000','#492D22',
+                  '#FF770F','#000026',
+                  '#003153','#7356B1',
+                  '#BDB5D7','#4C7543',
+                  '#194955','#F49227']
+
 
 def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
     '''
@@ -102,7 +110,7 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
 
 
 
-def xspec_plot(data,save_dir=None,fignum=None,leg=None):
+def xspec_plot(data,save_dir=None,leg=None,color='random'):
 
     if isinstance(data,tuple):
         energies,edeltas,rates,errors,model,resid,residerr,labels = data
@@ -140,9 +148,12 @@ def xspec_plot(data,save_dir=None,fignum=None,leg=None):
         fig = plt.figure(figsize=(5.5*rows,8))
         gs = fig.add_gridspec(rows, hspace=0, height_ratios=[3,1])
         ax = gs.subplots(sharex=True)
-        cmap = plt.cm.get_cmap('gist_rainbow',30)
-        rand_color_idx = np.random.randint(0,30,len(data))
-        random_color = [mpl.colors.rgb2hex(cmap(i)) for i in rand_color_idx]
+        if color == 'random':
+            cmap = plt.cm.get_cmap('gist_rainbow',30)
+            rand_color_idx = np.random.randint(0,30,len(data))
+            random_color = [mpl.colors.rgb2hex(cmap(i)) for i in rand_color_idx]
+        elif color == 'default':
+            random_color = np.random.choice(DEFAULT_COLORS,len(data))
 
         for i in range(len(data)):
             energies,edeltas,rates,errors,model,resid,residerr,labels = data[i]

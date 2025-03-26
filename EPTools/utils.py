@@ -329,3 +329,4 @@ x_instrument_energy_range = {
     'EP-FXT':[0.4,10],
     'XRT':[0.4,10]
 }
+
