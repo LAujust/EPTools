@@ -124,3 +124,20 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
             matched_all['Z'][i] = matched_all['z'][i]
 
     matched_all.write(save_dir,format='csv',overwrite=True)
+
+
+def match_cat(source_cat,cat,radius,known_source_cat=None,nthneighbor=1):
+    if known_source_cat:
+        r = 3.5 * u.arcmin
+        idx, sep, _ = source_cat.match_to_catalog_sky(known_source_cat,nthneighbor=nthneighbor)
+        known_source_idx = sep < r
+        known_source_cat_idx = idx[known_source_idx]
+    else:
+        known_source_idx, known_source_cat_idx = [], []
+
+    idx, sep, _ = source_cat.match_to_catalog_sky(cat,nthneighbor=nthneighbor)
+    filtered_id = sep < radius
+    cat_matched_idx, cat_matched_sep = idx[filtered_id], sep[filtered_id]
+    source_matched_idx = filtered_id
+    print(cat_matched_sep)
+    return source_matched_idx, cat_matched_idx, known_source_idx, known_source_cat_idx
