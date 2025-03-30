@@ -15,7 +15,7 @@ def grp_data(sname,outputname,arf=None,rmf=None,group=1):
     print(cmd)
     subprocess.run(cmd,capture_output=True, text=True)
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -30,11 +30,14 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
         instrument (str or list, optional): 'WXT' or 'FXT'
         plotmode (str, optional): xspec plot mode (e.g. data, ldata, edata)
         untied (dict): untied parameters. The elements are parName:[mNum,value], e.g. {'tbabs.nH':[2,0.1]}
+        chdir (str): change home dir
         fixed_par: fixed parameters. Second and third, forth model parameters are the same with the first one by default
 
     Returns:
         tuple or list of tuple: (energies,edeltas,rates,errors,model,labels)
     """
+    if chdir:
+        os.chdir(chdir)
     
     xs.Xset.allowNewAttributes = True
 
