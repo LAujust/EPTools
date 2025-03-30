@@ -139,5 +139,4 @@ def match_cat(source_cat,cat,radius,known_source_cat=None,nthneighbor=1):
     filtered_id = sep < radius
     cat_matched_idx, cat_matched_sep = idx[filtered_id], sep[filtered_id]
     source_matched_idx = filtered_id
-    print(cat_matched_sep)
     return source_matched_idx, cat_matched_idx, known_source_idx, known_source_cat_idx

@@ -271,6 +271,9 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,group
     """
     #Designed for FXT
     #Plot curve
+    #Move to root dir
+    os.chdir(root)
+    root = './'
     snum = str(snum)
     lc_src = os.path.join(root,obsid)+snum+'.lc'
     #Designed for WXT
@@ -299,13 +302,13 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,group
         pha_src = pha_grp_src
 
         
-    fitted_data = xspec_fitting(pha_src,mname=mpw,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='edata',**{'powerlaw.norm':1})
+    fitted_data = xspec_fitting(pha_src,mname=mpw,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',**{'powerlaw.norm':1,'cflux.Emin':0.5,'cflux.Emax':4.0})
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_pw.pdf',leg='Powerlaw')
 
-    fitted_data = xspec_fitting(pha_src,mname=mbb,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='edata',**{'bbody.norm':1})
+    fitted_data = xspec_fitting(pha_src,mname=mbb,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='euf resid',**{'bbody.norm':1,'cflux.Emin':0.5,'cflux.Emax':4.0})
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_bb.pdf',leg='Bbody')
     
-    fitted_data = xspec_fitting(pha_src,mname=mapec,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='edata',**{'apec.norm':1})
+    fitted_data = xspec_fitting(pha_src,mname=mapec,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='euf resid',**{'apec.norm':1,'cflux.Emin':0.5,'cflux.Emax':4.0})
     xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_apec.pdf',leg='Apec')
 
     

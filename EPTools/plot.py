@@ -120,18 +120,19 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
             stepenergies.append(energies[i] - edeltas[i])
         stepenergies.append(energies[-1]+edeltas[-1])
         model.append(model[-1])
-        resid.append(resid[-1])
+        #resid.append(resid[-1])
 
         #plt.yscale('log')
         rows = 2
         fig = plt.figure(figsize=(5.5*rows,8))
         gs = fig.add_gridspec(rows, hspace=0, height_ratios=[3,1])
         ax = gs.subplots(sharex=True)
-        plt.xscale('log')
-        plt.yscale('log')
-        ax[0].xlabel(labels[0])
-        ax[0].ylabel(labels[1])
-        plt.title(labels[2])
+        ax[0].set_ylabel(labels[1])
+        ax[1].set_xlabel(labels[0])
+        ax[0].set_xscale('log')
+        ax[0].set_yscale('log')
+        ax[1].set_ylabel('Residual')
+        ax[0].set_title(labels[2])
         ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
         ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color='dimgrey',fmt='.')
         ax[0].step(stepenergies,model,where='post',color='royalblue')
@@ -164,16 +165,14 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
             stepenergies.append(energies[-1]+edeltas[-1])
             model.append(model[-1])
 
-
-            ax[0].set_ylabel(labels[1])
             ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=leg[i])
             ax[0].step(stepenergies,model,where='post',color='dimgrey')
             ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color=random_color[i],fmt='.')
-            ax[1].set_ylabel
             ax[0].legend()
+            ax[0].set_ylabel(labels[1])
+            ax[1].set_xlabel(labels[0])
             ax[0].set_xscale('log')
             ax[0].set_yscale('log')
-            ax[1].set_xlabel(labels[0])
             ax[1].set_ylabel('Residual')
             ax[0].set_title(labels[2])
             
@@ -225,6 +224,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None):
     ax.errorbar(t,rate_bkg,yerr=error_bkg,xerr=binsize/2,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
     ax.errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
                 color='darkorange',alpha=0.7,fmt='.',label='Net')
+    ax.hlines(0,t[0],t[-1],color='k',ls='--')
     ax.legend()
     ax.grid()
     ax.set_ylabel('counts/s')
