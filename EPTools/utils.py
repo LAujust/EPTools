@@ -256,7 +256,7 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,group=None,rx=None,ins='WXT'):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,ins='WXT'):
     """
     Perform quick analysis for TA.
 
@@ -289,9 +289,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,group
 
     lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',rx=rx)
     
-    mpw = 'tbabs*cflux*powerlaw'
-    mbb = 'tbabs*cflux*bbody'
-    mapec = 'tbabs*cflux*apec'
+    erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
     
     if grp and not pha_file:
         pha_grp_src = 'PC.pi'
@@ -301,15 +299,16 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,group
         grp_data(pha_src,outputname=pha_grp_src,arf=arf,rmf=rmf,group=group)
         pha_src = pha_grp_src
 
-        
-    fitted_data = xspec_fitting(pha_src,mname=mpw,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',**{'powerlaw.norm':1,'cflux.Emin':0.5,'cflux.Emax':4.0})
-    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_pw.pdf',leg='Powerlaw')
-
-    fitted_data = xspec_fitting(pha_src,mname=mbb,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='euf resid',**{'bbody.norm':1,'cflux.Emin':0.5,'cflux.Emax':4.0})
-    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_bb.pdf',leg='Bbody')
     
-    fitted_data = xspec_fitting(pha_src,mname=mapec,grp=grp,arf=arf,rmf=rmf,instrument=ins,rebin=rebin,plotmode='euf resid',**{'apec.norm':1,'cflux.Emin':0.5,'cflux.Emax':4.0})
-    xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_apec.pdf',leg='Apec')
+    models = ['powerlaw','bbody','apec']
+    for model in models:
+        mname = 'tbabs*cflux*' + model
+        fix_ = {model+'.norm':1,'cflux.Emin':erange[ins][0],'cflux.Emax':erange[ins][1]}
+        if nH:
+            fix_['TBabs.nH'] = nH
+        fitted_data = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',**fix_)
+        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model)
+        
 
     
     
