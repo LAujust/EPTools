@@ -106,7 +106,8 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
     #Plot data
     xs.Plot.device = "/null"
     xs.Plot.xAxis="keV"
-    xs.Plot.setRebin(rebin,20)
+    if rebin:
+        xs.Plot.setRebin(rebin[0],rebin[1])
     xs.Plot(plotmode)
     
     if isinstance(sname,str):

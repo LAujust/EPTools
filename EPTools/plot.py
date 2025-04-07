@@ -184,7 +184,7 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
             plt.show()
 
 
-def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None):
+def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False):
     with fits.open(src) as hdu:
 #        TSTART = hdu[0].header['TSTART']
         DATE_OBS = hdu[0].header['DATE-OBS']
@@ -215,25 +215,50 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None):
             rate_bkg.append(scale*sum(RATE_bkg[idx])/true_size)
             error_bkg.append(scale*np.sqrt(sum(ERROR_bkg[idx]**2))/true_size)
             pin += binsize
+            
+    if sep:
+        fig = plt.figure()
+        gs = fig.add_gridspec(3,hspace=0)
+        ax = gs.subplots(sharex=True)
+        ax[0].errorbar(t,rate,yerr=error,xerr=binsize/2,color='steelblue',fmt='.',alpha=0.7,label='Src')
+        ax[2].errorbar(t,rate_bkg,yerr=error_bkg,xerr=binsize/2,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
+        ax[1].errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
+                    xerr=binsize/2,
+                    color='darkorange',alpha=0.7,fmt='.',label='Net')
+        if rx:
+                ax[2].set_xlim(rx)
+        
+        for i in range(3):
+            ax[i].hlines(0,t[0],t[-1],color='k',ls='--')
+            ax[i].legend()
+            ax[i].grid()
+            ax[i].set_ylabel('counts/s')
 
-    fig, ax = plt.subplots(dpi=100,figsize=(8,7))
-    # gs = fig.add_gridspec(2, hspace=0,height_ratios=[1.5,1])
-    # ax = gs.subplots(sharex=True)
-
-    ax.errorbar(t,rate,yerr=error,xerr=binsize/2,color='steelblue',fmt='.',alpha=0.7,label='Src')
-    ax.errorbar(t,rate_bkg,yerr=error_bkg,xerr=binsize/2,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
-    ax.errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
-                xerr=binsize/2,
-                color='darkorange',alpha=0.7,fmt='.',label='Net')
-    ax.hlines(0,t[0],t[-1],color='k',ls='--')
-    ax.legend()
-    ax.grid()
-    ax.set_ylabel('counts/s')
-    ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
-    if rx:
-        ax.set_xlim(rx)
-    if save_dir:
-        plt.savefig(save_dir,dpi=300)
+        ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
+        if save_dir:
+            plt.savefig(save_dir,dpi=300)
+        else:
+            plt.show()
+    
     else:
-        plt.show()
+        fig, ax = plt.subplots(dpi=100,figsize=(8,7))
+        # gs = fig.add_gridspec(2, hspace=0,height_ratios=[1.5,1])
+        # ax = gs.subplots(sharex=True)
+
+        ax.errorbar(t,rate,yerr=error,xerr=binsize/2,color='steelblue',fmt='.',alpha=0.7,label='Src')
+        ax.errorbar(t,rate_bkg,yerr=error_bkg,xerr=binsize/2,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
+        ax.errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
+                    xerr=binsize/2,
+                    color='darkorange',alpha=0.7,fmt='.',label='Net')
+        ax.hlines(0,t[0],t[-1],color='k',ls='--')
+        ax.legend()
+        ax.grid()
+        ax.set_ylabel('counts/s')
+        ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
+        if rx:
+            ax.set_xlim(rx)
+        if save_dir:
+            plt.savefig(save_dir,dpi=300)
+        else:
+            plt.show()
 
