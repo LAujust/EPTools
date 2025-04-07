@@ -223,6 +223,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None):
     ax.errorbar(t,rate,yerr=error,xerr=binsize/2,color='steelblue',fmt='.',alpha=0.7,label='Src')
     ax.errorbar(t,rate_bkg,yerr=error_bkg,xerr=binsize/2,color='grey',alpha=0.7,fmt='.',label='Scaled bkg')
     ax.errorbar(t,np.array(rate)-np.array(rate_bkg),yerr=np.sqrt(np.array(error)**2+np.array(error_bkg)**2),
+                xerr=binsize/2,
                 color='darkorange',alpha=0.7,fmt='.',label='Net')
     ax.hlines(0,t[0],t[-1],color='k',ls='--')
     ax.legend()
