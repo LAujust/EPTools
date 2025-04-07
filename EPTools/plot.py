@@ -228,7 +228,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None):
     ax.legend()
     ax.grid()
     ax.set_ylabel('counts/s')
-    ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f})'.format(DATE_OBS,binsize))
+    ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
     if rx:
         ax.set_xlim(rx)
     if save_dir:
