@@ -241,7 +241,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False):
             plt.show()
     
     else:
-        fig, ax = plt.subplots(dpi=100,figsize=(8,7))
+        fig, ax = plt.subplots(dpi=100,figsize=(7,5))
         # gs = fig.add_gridspec(2, hspace=0,height_ratios=[1.5,1])
         # ax = gs.subplots(sharex=True)
 

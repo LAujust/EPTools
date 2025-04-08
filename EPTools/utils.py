@@ -256,7 +256,7 @@ def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,ins='WXT'):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT'):
     """
     Perform quick analysis for TA.
 
@@ -287,7 +287,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     if pha_file:
         pha_src = pha_file
 
-    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',rx=rx)
+    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',sep=sep,rx=rx)
     
     erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
     
