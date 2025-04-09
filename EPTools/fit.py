@@ -74,6 +74,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
                 xs.AllData(i+1).ignore("bad")
                 xs.AllData(i+1).ignore("0.0-{:.1f} {:.1f}-**".format(erange[instrument[i]][0],erange[instrument[i]][1]))
         
+    xs.AllData.ignore("bad")
             
     #Load Model and freeze parameters
     m = xs.Model(mname)
