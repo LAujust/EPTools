@@ -176,7 +176,9 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
             ax[1].set_ylabel('Residual')
             ax[0].set_title(labels[2])
             
-        ax[1].hlines(0.0,0.0,10.0,ls='dashed',color='maroon')
+        #ax[1].hlines(0.0,0.0,10.0,ls='dashed',color='maroon')
+        ax[0].grid()
+        ax[1].grid()
 
         if save_dir:
             plt.savefig(save_dir,dpi=300)
