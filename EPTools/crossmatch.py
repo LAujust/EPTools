@@ -31,6 +31,7 @@ class Crossmatch(object):
         radius[float]:  radius in degree
         """
         if self.asassn is None:
+            from pyasassn.client import SkyPatrolClient
             self.asassn = SkyPatrolClient()
         string = pos.split(' ')
         ra, dec = string[0],string[1]
