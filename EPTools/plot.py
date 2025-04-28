@@ -186,7 +186,7 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
             plt.show()
 
 
-def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False):
+def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,show=False):
     with fits.open(src) as hdu:
 #        TSTART = hdu[0].header['TSTART']
         DATE_OBS = hdu[0].header['DATE-OBS']
@@ -239,8 +239,10 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False):
         ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
         if save_dir:
             plt.savefig(save_dir,dpi=300)
-        else:
+        if show:
             plt.show()
+        else:
+            return fig, ax
     
     else:
         fig, ax = plt.subplots(dpi=100,figsize=(7,5))
@@ -261,6 +263,8 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False):
             ax.set_xlim(rx)
         if save_dir:
             plt.savefig(save_dir,dpi=300)
-        else:
+        if show:
             plt.show()
+        else:
+            return fig, ax
 

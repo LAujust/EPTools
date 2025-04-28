@@ -11,6 +11,7 @@ def observed_SED():
     pass
 
 def make_EPPlan(filename:str,instrument:str):
+    import simsurvey
     zp = 25.
     pointings = pd.read_csv(filename)
         

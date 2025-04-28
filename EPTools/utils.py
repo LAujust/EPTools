@@ -6,13 +6,11 @@ import subprocess
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
 from astropy.coordinates import SkyCoord
-from pyasassn.client import SkyPatrolClient
 from astropy.io.votable import parse_single_table
 from astropy.utils.data import conf
 import sncosmo
 from ligo.gracedb.rest import GraceDb
 import ligo.skymap
-import simsurvey
 from astropy.time import Time
 from .plot import *
 from .fit import *
