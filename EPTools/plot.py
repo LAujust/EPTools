@@ -123,9 +123,8 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
         #resid.append(resid[-1])
 
         #plt.yscale('log')
-        rows = 2
-        fig = plt.figure(figsize=(5.5*rows,8))
-        gs = fig.add_gridspec(rows, hspace=0, height_ratios=[3,1])
+        fig = plt.figure(figsize=(7,6))
+        gs = fig.add_gridspec(2, hspace=0, height_ratios=[3,1])
         ax = gs.subplots(sharex=True)
         ax[0].set_ylabel(labels[1])
         ax[1].set_xlabel(labels[0])
@@ -136,8 +135,9 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
         ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
         ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color='dimgrey',fmt='.')
         ax[0].step(stepenergies,model,where='post',color='royalblue')
-        plt.legend()
+        ax[0].legend()
         plt.grid()
+        plt.tight_layout()
         if save_dir:
             plt.savefig(save_dir,dpi=300)
         else:
@@ -146,7 +146,7 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
 
     elif isinstance(data,list) and isinstance(data[0],tuple):
         rows = 2
-        fig = plt.figure(figsize=(5.5*rows,8))
+        fig = plt.figure(figsize=(7,6))
         gs = fig.add_gridspec(rows, hspace=0, height_ratios=[3,1])
         ax = gs.subplots(sharex=True)
         if color == 'random':

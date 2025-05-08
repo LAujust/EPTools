@@ -304,7 +304,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     #Plot curve
     #Move to root dir
     os.chdir(root)
-    root = './'
+    root = ''
     snum = str(snum)
     lc_src = os.path.join(root,obsid)+snum+'.lc'
     #Designed for WXT
@@ -326,8 +326,9 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         pha_grp_src = 'PC.pi'
         if os.path.exists(pha_grp_src):
             os.remove(pha_grp_src)
-        print(pha_grp_src)
-        grp_data(pha_src,outputname=pha_grp_src,arf=arf,rmf=rmf,group=group)
+        print(f"grppha infile={pha_src} outfile=!PC.pi comm='group min {group} & exit' > /dev/null")
+        #grp_data(pha_src,outputname=pha_grp_src,arf=arf,rmf=rmf,group=group)
+        os.system(f"grppha infile={pha_src} outfile=PC.pi comm='group min {group} & exit' > /dev/null") 
         pha_src = pha_grp_src
 
     
