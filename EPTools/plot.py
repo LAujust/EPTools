@@ -218,6 +218,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
             error_bkg.append(scale*np.sqrt(sum(ERROR_bkg[idx]**2))/true_size)
             pin += binsize
             
+            
     if sep:
         fig = plt.figure()
         gs = fig.add_gridspec(3,hspace=0)

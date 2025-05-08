@@ -11,6 +11,7 @@ from astropy.utils.data import conf
 import sncosmo
 from ligo.gracedb.rest import GraceDb
 import ligo.skymap
+from astropy.io import fits
 from astropy.time import Time
 from .plot import *
 from .fit import *
@@ -253,6 +254,38 @@ def BNS_ejecta_mass(Mc, q, R1, R2, Mtov):
 def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
+def read_curve(src,bkg,binsize=10,scale=1./12):
+    with fits.open(src) as hdu:
+        TSTART = hdu[0].header['TSTART']
+        DATE_OBS = hdu[0].header['DATE-OBS']
+        data = hdu[1].data
+        TIME = data['TIME']
+        RATE = data['RATE']
+        ERROR = data['ERROR']
+    with fits.open(bkg) as hdu:
+        bkg = hdu[1].data
+        TIME_bkg = bkg['TIME']
+        RATE_bkg = bkg['RATE']
+        ERROR_bkg = bkg['ERROR']
+
+    t,rate,error = [],[],[]
+    t_bkg,rate_bkg,error_bkg = [],[],[] #Scaled
+    #Rebin
+    pin = TIME[0]
+    while pin+binsize < TIME[-1]:
+        idx = np.where((TIME>pin) & (TIME<pin+binsize))[0]
+        true_size = len(idx)
+        if true_size == 0:
+            pin += binsize
+            continue
+        else:
+            t.append(sum(TIME[idx])/true_size)
+            rate.append(sum(RATE[idx])/true_size)
+            error.append(np.sqrt(sum(ERROR[idx]**2))/true_size)
+            rate_bkg.append(scale*sum(RATE_bkg[idx])/true_size)
+            error_bkg.append(scale*np.sqrt(sum(ERROR_bkg[idx]**2))/true_size)
+            pin += binsize 
+    return (t,rate,error), (t_bkg,rate_bkg,error_bkg), (t,np.array(rate)-np.array(rate_bkg),np.sqrt(np.array(error)**2+np.array(error_bkg)**2)), TSTART
 
 def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT'):
     """
