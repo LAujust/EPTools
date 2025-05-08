@@ -15,7 +15,7 @@ def grp_data(sname,outputname,arf=None,rmf=None,group=1):
     print(cmd)
     subprocess.run(cmd,capture_output=True, text=True)
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -29,7 +29,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
         rebin (float, optional): rebin
         instrument (str or list, optional): 'WXT' or 'FXT'
         plotmode (str, optional): xspec plot mode (e.g. data, ldata, edata)
-        untied (dict): untied parameters. The elements are parName:[mNum,value], e.g. {'tbabs.nH':[2,0.1]}
+        untied (dict): untied parameters. e.g. ['powerlaw.norm=1,0.1',...]
         chdir (str): change home dir
         fixed_par: fixed parameters. Second and third, forth model parameters are the same with the first one by default
 
@@ -85,8 +85,10 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
         exec('m.{}={}'.format(key,value))
         exec('m.{}.frozen=True'.format(key))
     if untied:
-        for par,value in untied.items():
-            exec('xs.AllModels({}).{}={}'.format(value[0],par,value[1]))
+        for item in untied:
+            key, value = item.split("=")
+            values = [float(v) if "." in v else int(v) for v in value.split(",")]  # 转换成数字
+            exec('xs.AllModels({}).{}={}'.format(values[0],key,values[1]))
         
     xs.AllModels.show()
     xs.AllData.show()
@@ -108,7 +110,10 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=5,stat='csta
     xs.Plot.device = "/null"
     xs.Plot.xAxis="keV"
     if rebin:
-        xs.Plot.setRebin(rebin[0],rebin[1])
+        if len(rebin)>1:
+            xs.Plot.setRebin(minSig=rebin[0],maxBins=rebin[1])
+        else:
+            xs.Plot.setRebin(rebin[0])
     xs.Plot(plotmode)
     
     if isinstance(sname,str):
