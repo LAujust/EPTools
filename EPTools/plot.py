@@ -110,7 +110,7 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
 
 
 
-def xspec_plot(data,save_dir=None,leg=None,color='random'):
+def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
 
     if isinstance(data,tuple):
         energies,edeltas,rates,errors,model,resid,residerr,labels = data
@@ -134,7 +134,13 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
         ax[0].set_title(labels[2])
         ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
         ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color='dimgrey',fmt='.')
-        ax[0].step(stepenergies,model,where='post',color='royalblue')
+        if plotstyle == 'step':
+            ax[0].step(stepenergies,model,where='post',color='royalblue')
+        elif plotstyle == 'line':
+            ax[0].plot(stepenergies,model,color='royalblue')
+        else:
+            raise KeyError('Not valid plotstyle (step/line)')
+        
         ax[0].legend()
         plt.grid()
         plt.tight_layout()
@@ -166,7 +172,12 @@ def xspec_plot(data,save_dir=None,leg=None,color='random'):
             model.append(model[-1])
 
             ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=leg[i])
-            ax[0].step(stepenergies,model,where='post',color='dimgrey')
+            if plotstyle == 'step':
+                ax[0].step(stepenergies,model,where='post',color='dimgrey')
+            elif plotstyle == 'line':
+                ax[0].plot(stepenergies,model,color='royalblue')
+            else:
+                raise KeyError('Not valid plotstyle (step/line)')
             ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color=random_color[i],fmt='.')
             ax[0].legend()
             ax[0].set_ylabel(labels[1])
