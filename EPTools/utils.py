@@ -294,7 +294,7 @@ def read_curve(src,bkg,binsize=10,scale=1./12):
             pin += binsize 
     return (t,rate,error), (t_bkg,rate_bkg,error_bkg), (t,np.array(rate)-np.array(rate_bkg),np.sqrt(np.array(error)**2+np.array(error_bkg)**2)), TSTART
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT'):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step'):
     """
     Perform quick analysis for TA.
 
@@ -346,7 +346,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         if nH:
             fix_['TBabs.nH'] = nH
         fitted_data = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',**fix_)
-        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model)
+        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model,plotstyle=plotstyle)
         
 
     
