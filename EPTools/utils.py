@@ -324,8 +324,6 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     rmf = os.path.join(root,obsid)+'.rmf'
     if pha_file:
         pha_src = pha_file
-
-    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',sep=sep,rx=rx)
     
     erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
     
@@ -347,6 +345,8 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
             fix_['TBabs.nH'] = nH
         fitted_data = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',**fix_)
         xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model,plotstyle=plotstyle)
+        
+    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',sep=sep,rx=rx)
         
 
     
