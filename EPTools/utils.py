@@ -294,6 +294,19 @@ def read_curve(src,bkg,binsize=10,scale=1./12):
             pin += binsize 
     return (t,rate,error), (t_bkg,rate_bkg,error_bkg), (t,np.array(rate)-np.array(rate_bkg),np.sqrt(np.array(error)**2+np.array(error_bkg)**2)), TSTART
 
+def Txx(times,rates,c=0.9):
+    """
+    c[float]:   confident level [0,1], default=0.9 represent 90% credible level
+    """
+    accumulated_rates = accumulated_rates
+    rates = rates
+    rates_err = rates_err
+    C5 = np.quantile(accumulated_rates,c/2)
+    C95 = np.quantile(accumulated_rates,1-c/2)
+    i5, i95 = np.abs(accumulated_rates-C5).argmin(), np.abs(accumulated_rates-C95).argmin()
+    T5, T95 = times[i5], times[i95]
+    return T95-T5
+
 def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step'):
     """
     Perform quick analysis for TA.
