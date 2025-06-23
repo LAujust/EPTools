@@ -44,8 +44,9 @@ class Crossmatch(object):
     
     def ztf_lc(self, pos:str, band:str, match_rad:float=5):
         """
-        :param band: str
-        :param match_rad: float, unit is arcsec; defaule value is 5 arcsec
+        :pos[str]   'ra dec' in deg
+        :band[str] g/r/i
+        :match_rad[float] mathing radius in arcsec
         :return: astropy.io.votable
         """
         ra, dec = pos.split(' ')
