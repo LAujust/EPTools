@@ -56,7 +56,7 @@ class Crossmatch(object):
         lcdata = parse_single_table(API).to_table()
         return lcdata
     
-    def crossmatch_milliquas(self,ra,dec,radius):
+    def crossmatch_milliquas(self,ra,dec,radius,mlq_dir='/Volumes/T7/Shared_Files/EP/catalogs/'):
         """
         ra, dec: in deg
         radius: in arcsec
