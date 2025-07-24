@@ -307,7 +307,7 @@ def Txx(times,rates,c=0.9):
     T5, T95 = times[i5], times[i95]
     return T95-T5
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step'):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step',snum_prefix=False,chatter=10):
     """
     Perform quick analysis for TA.
 
@@ -319,6 +319,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     - rebin (int, optional): Rebin factor. Defaults to 2.
     - rx (float, optional): refine x range.
     - ins (str, optional): Instrument name. Defaults to 'WXT'.
+    - snum_prefix: specify snum in file searching
     """
     #Designed for FXT
     #Plot curve
@@ -330,11 +331,18 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     #Designed for WXT
     #Plot curve
     snum = str(snum)
-    lc_src = os.path.join(root,obsid)+snum+'.lc'
-    lc_bkg = os.path.join(root,obsid)+snum+'bk.lc'
-    pha_src = os.path.join(root,obsid)+snum+'.pha'
-    arf = os.path.join(root,obsid)+snum+'.arf'
-    rmf = os.path.join(root,obsid)+'.rmf'
+    lc_src = glob.glob(os.path.join(root,'**%s.lc'%snum))[0]
+    lc_bkg = glob.glob(os.path.join(root,'**%sbk.lc'%snum))[0]
+    pha_src = glob.glob(os.path.join(root,'**%s.pha'%snum))[0]
+    arf = glob.glob(os.path.join(root,'**.arf'))[0]
+    rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
+    
+    # lc_src = os.path.join(root,obsid)+snum+'.lc'
+    # lc_bkg = os.path.join(root,obsid)+snum+'bk.lc'
+    # pha_src = os.path.join(root,obsid)+snum+'.pha'
+    # arf = os.path.join(root,obsid)+snum+'.arf'
+    # rmf = os.path.join(root,obsid)+'.rmf'
+    
     if pha_file:
         pha_src = pha_file
     
@@ -356,7 +364,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         fix_ = {model+'.norm':1,'cflux.Emin':erange[ins][0],'cflux.Emax':erange[ins][1]}
         if nH:
             fix_['TBabs.nH'] = nH
-        fitted_data = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',**fix_)
+        fitted_data = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',chatter=chatter,**fix_)
         xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model,plotstyle=plotstyle)
         
     lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',sep=sep,rx=rx)

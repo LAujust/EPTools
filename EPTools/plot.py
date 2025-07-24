@@ -132,8 +132,8 @@ def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
         ax[0].set_yscale('log')
         ax[1].set_ylabel('Residual')
         ax[0].set_title(labels[2])
-        ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color='dimgrey',label=leg)
-        ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color='dimgrey',fmt='.')
+        ax[0].errorbar(energies,rates,xerr=edeltas,yerr=np.abs(errors),fmt='.',color='dimgrey',label=leg)
+        ax[1].errorbar(energies,resid,xerr=edeltas,yerr=np.abs(residerr),color='dimgrey',fmt='.')
         if plotstyle == 'step':
             ax[0].step(stepenergies,model,where='post',color='royalblue')
         elif plotstyle == 'line':

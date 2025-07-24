@@ -15,7 +15,7 @@ def grp_data(sname,outputname,arf=None,rmf=None,group=1):
     print(cmd)
     subprocess.run(cmd,capture_output=True, text=True)
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,chatter=10,**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -40,6 +40,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
         os.chdir(chdir)
     
     xs.Xset.allowNewAttributes = True
+    xs.Xset.chatter = chatter
 
     erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
     
@@ -92,18 +93,26 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
         
     xs.AllModels.show()
     xs.AllData.show()
+    #xs.Xset.chatter = 10
     
     #Fit
     xs.Fit.renorm('auto')
     xs.Fit.nIterations = 300
     xs.Fit.statMethod = stat
     xs.Fit.perform()
+    xs.Fit.show()
     # xs.Fit.goodness(200)
     if isinstance(sname,str):
         xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument][0],erange[instrument][1]))
+        xs.AllModels.calcFlux('0.5 2')
+        xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][1]))
+
     else:
         for i in range(len(sname)):
             xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument[i]][0],erange[instrument[i]][1]))
+            xs.AllModels.calcFlux('0.5 2')
+            xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][i][1]))
+
     
     
     #Plot data
