@@ -199,8 +199,8 @@ def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
 
 def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,show=False):
     with fits.open(src) as hdu:
-#        TSTART = hdu[0].header['TSTART']
-        DATE_OBS = hdu[0].header['DATE-OBS']
+        TSTART = hdu[0].header['TSTART']
+        #DATE_OBS = hdu[0].header['DATE-OBS']
         data = hdu[1].data
         TIME = data['TIME']
         RATE = data['RATE']
@@ -248,7 +248,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
             ax[i].grid()
             ax[i].set_ylabel('counts/s')
 
-        ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
+        ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(T0,binsize))
         if save_dir:
             plt.savefig(save_dir,dpi=300)
         if show:
@@ -270,7 +270,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
         ax.legend()
         ax.grid()
         ax.set_ylabel('counts/s')
-        ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(DATE_OBS,binsize))
+        ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(T0,binsize))
         if rx:
             ax.set_xlim(rx)
         if save_dir:
