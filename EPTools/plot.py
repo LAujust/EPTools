@@ -200,6 +200,7 @@ def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
 def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,show=False):
     with fits.open(src) as hdu:
         TSTART = hdu[0].header['TSTART']
+        T0 = TSTART
         #DATE_OBS = hdu[0].header['DATE-OBS']
         data = hdu[1].data
         TIME = data['TIME']
