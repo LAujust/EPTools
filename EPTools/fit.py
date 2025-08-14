@@ -1,6 +1,15 @@
 from .utils import *
 import dynesty
+from astropy.table import Table
 import xspec as xs
+
+MODEL_COMP_PARAM = {
+    'TBabs':['nH'],
+    'cflux':['Emin','Emax','lg10Flux'],
+    'powerlaw':['PhoIndex','norm'],
+    'bbody':['kT','norm'],
+    'apec':['Abundanc','kT','Redshift','norm']
+}
 
 
 def grp_data(sname,outputname,arf=None,rmf=None,group=1):
@@ -15,7 +24,7 @@ def grp_data(sname,outputname,arf=None,rmf=None,group=1):
     print(cmd)
     subprocess.run(cmd,capture_output=True, text=True)
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,chatter=10,**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**fixed_par):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -97,11 +106,43 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     
     #Fit
     xs.Fit.renorm('auto')
-    xs.Fit.nIterations = 300
+    xs.Fit.nIterations = N
     xs.Fit.statMethod = stat
     xs.Fit.perform()
     xs.Fit.show()
     # xs.Fit.goodness(200)
+
+    # Split on *, (, ), +
+    parts = re.split(r'[\*\(\)\+]', mname)
+    comps = [p for p in parts if p]
+
+    par_table = Table()
+    par_table['name'] = [mname]
+    par_table['sname'] = [sname]
+
+    # comps = m.componentNames
+    # print(comps)
+    # for comp in comps:
+    #     pars = []
+    #     print(comp)
+    #     exec("pars = m.%s.parameterNames"%comp)
+    #     print(pars)
+    #     for par in pars:
+    #         exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
+
+    for comp in comps:
+        if comp == 'tbabs':
+            comp = 'TBabs'
+        pars = MODEL_COMP_PARAM[comp]
+        for par in pars:
+            exec("print(par,m.%s.%s.values)"%(comp,par))
+            exec("print(par,m.%s.%s.error)"%(comp,par))
+            exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
+            exec("par_table['%s_err_low']=[m.%s.%s.error[0]]"%(par,comp,par))
+            exec("par_table['%s_err_high']=[m.%s.%s.error[1]]"%(par,comp,par))
+    
+    par_table.pprint(max_lines=-1,max_width=-1)
+
     if isinstance(sname,str):
         xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument][0],erange[instrument][1]))
         xs.AllModels.calcFlux('0.5 2')
