@@ -110,6 +110,9 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     xs.Fit.statMethod = stat
     xs.Fit.perform()
     xs.Fit.show()
+    cstat = xs.Fit.statistic
+    dof = xs.Fit.dof
+    reduced_cstat = cstat / dof
     # xs.Fit.goodness(200)
 
     # Split on *, (, ), +
@@ -119,6 +122,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     par_table = Table()
     par_table['name'] = [mname]
     par_table['sname'] = [sname]
+    par_table['cstat/dof'] = reduced_cstat
 
     # comps = m.componentNames
     # print(comps)
@@ -130,13 +134,17 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     #     for par in pars:
     #         exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
 
+    par_num = 0
     for comp in comps:
         if comp == 'tbabs':
             comp = 'TBabs'
         pars = MODEL_COMP_PARAM[comp]
         for par in pars:
-            exec("print(par,m.%s.%s.values)"%(comp,par))
-            exec("print(par,m.%s.%s.error)"%(comp,par))
+            par_num += 1
+            xs.Fit.error(str(par_num))
+            #print("print(par,m.%s.%s.error)"%(comp,par))
+            #exec("print(par,m.%s.%s.values)"%(comp,par))
+            #exec("print(par,m.%s.%s.error)"%(comp,par))
             exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
             exec("par_table['%s_err_low']=[m.%s.%s.error[0]]"%(par,comp,par))
             exec("par_table['%s_err_high']=[m.%s.%s.error[1]]"%(par,comp,par))
@@ -191,7 +199,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     
     xs.AllModels.clear()
     xs.AllData.clear()
-    return output
+    return output, par_table
 
 
 def dynesty_fitting(prior_transform, log_likeli,bounds,nlive,log_args):

@@ -366,12 +366,13 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
 
     
     models = ['powerlaw','bbody','apec']
+    par_table = Table()
     for model in models:
         mname = 'tbabs*cflux*' + model
         fix_ = {model+'.norm':1,'cflux.Emin':erange[ins][0],'cflux.Emax':erange[ins][1]}
         if nH:
             fix_['TBabs.nH'] = nH
-        fitted_data = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',N=N,chatter=chatter,**fix_)
+        fitted_data, par_table_i = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='euf resid',N=N,chatter=chatter,**fix_)
         xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model,plotstyle=plotstyle)
         
     lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',sep=sep,rx=rx)
