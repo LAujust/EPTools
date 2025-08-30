@@ -206,6 +206,9 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
         TIME = data['TIME']
         RATE = data['RATE']
         ERROR = data['ERROR']
+
+        T0 = Time('2020-01-01 00:00:00') + TSTART*u.second
+        T0 = T0.iso
     with fits.open(bkg) as hdu:
         bkg = hdu[1].data
         TIME_bkg = bkg['TIME']
