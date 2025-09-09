@@ -7,11 +7,11 @@ An easy python package/code for Einstein Probe data analysis.
 
 ## Requirements
 
-Heasoft should be installed, and the path of PyXspec need to be correctly e
+Heasoft should be installed, and the path of PyXspec need to be correctly added. 
 
 ## Quick Start
 
-After installed `EPTools`, you can easily process WXT data by using `EPTools.TA_quick` function to obtain basic lightcurve, spectrum and fitting of specified source:
+After installed `EPTools`, you can easily process WXT data by using `EPTools.TA_quick` function to obtain basic lightcurve, spectrum and fitting of specified source for TA:
 
 ```
 import EPTools
