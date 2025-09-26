@@ -368,13 +368,32 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
 
     
     models = ['powerlaw','bbody','apec']
+    key_pars = {'powerlaw':['PhoIndex'],'bbody':['kT'],'apec':['kT']}
     for model in models:
         mname = 'tbabs*cflux*' + model
         fix_ = {model+'.norm':1,'cflux.Emin':erange[ins][0],'cflux.Emax':erange[ins][1]}
         if nH:
             fix_['TBabs.nH'] = nH
         fitted_data, par_table_i = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='ldata del',N=N,chatter=chatter,**fix_)
-        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,leg=model,plotstyle=plotstyle)
+        
+        model_leg = ''
+        for key_par in key_pars[model]:
+            p = par_table_i[key_par]
+            p_high = par_table_i['%s_err_high'%key_par]
+            p_low = par_table_i['%s_err_low'%key_par]
+            model_leg += '%s = %.3f (+%.3f/-%.3f)\n'%(key_par,p,p_high-p,p-p_low)
+        if not nH:
+            key_par = 'nH'
+            p = par_table_i[key_par]
+            p_high = par_table_i['%s_err_high'%key_par]
+            p_low = par_table_i['%s_err_low'%key_par]
+            model_leg += '%s = %.3e (+%.3e/-%.3e)\n'%(key_par,p,p_high-p,p-p_low)
+        
+        key_par = 'cstat/dof'
+        p = par_table_i[key_par]
+        model_leg += '%s = %.3f'%(key_par,p)
+            
+        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,plotstyle=plotstyle,model_leg=model_leg,title=model)
         
         par_table_i.write(os.path.join(root,'%s.csv'%model),format='csv',overwrite=True)
     
