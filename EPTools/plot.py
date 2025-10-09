@@ -110,7 +110,7 @@ def plot_gcn_data(file_dir='',output='standard_gcn.pdf',ttype=0):
 
 
 
-def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
+def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',model_color='#4575b4',model_leg=None):
 
     if isinstance(data,tuple):
         energies,edeltas,rates,errors,model,resid,residerr,labels = data
@@ -131,13 +131,16 @@ def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
         ax[0].set_xscale('log')
         ax[0].set_yscale('log')
         ax[1].set_ylabel('Residual')
-        ax[0].set_title(labels[2])
-        ax[0].errorbar(energies,rates,xerr=edeltas,yerr=np.abs(errors),fmt='.',color='dimgrey',label=leg)
+        if not title:
+            ax[0].set_title(labels[2])
+        else:
+            ax[0].set_title(labels[2]+' (%s)'%title)
+        ax[0].errorbar(energies,rates,xerr=edeltas,yerr=np.abs(errors),fmt='.',color='dimgrey')
         ax[1].errorbar(energies,resid,xerr=edeltas,yerr=np.abs(residerr),color='dimgrey',fmt='.')
         if plotstyle == 'step':
-            ax[0].step(stepenergies,model,where='post',color='royalblue')
+            ax[0].step(stepenergies,model,where='post',color=model_color,label=model_leg)
         elif plotstyle == 'line':
-            ax[0].plot(stepenergies,model,color='royalblue')
+            ax[0].plot(stepenergies,model,color=model_color,label=model_leg)
         else:
             raise KeyError('Not valid plotstyle (step/line)')
         
@@ -171,11 +174,11 @@ def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
             stepenergies.append(energies[-1]+edeltas[-1])
             model.append(model[-1])
 
-            ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=leg[i])
+            ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i])
             if plotstyle == 'step':
-                ax[0].step(stepenergies,model,where='post',color='dimgrey')
+                ax[0].step(stepenergies,model,where='post',color=model_color,label=model_leg)
             elif plotstyle == 'line':
-                ax[0].plot(stepenergies,model,color='royalblue')
+                ax[0].plot(stepenergies,model,color=model_color,label=model_leg)
             else:
                 raise KeyError('Not valid plotstyle (step/line)')
             ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color=random_color[i],fmt='.')
@@ -185,7 +188,10 @@ def xspec_plot(data,save_dir=None,leg=None,color='random',plotstyle='step'):
             ax[0].set_xscale('log')
             ax[0].set_yscale('log')
             ax[1].set_ylabel('Residual')
-            ax[0].set_title(labels[2])
+            if not title:
+                ax[0].set_title(labels[2])
+            else:
+                ax[0].set_title(labels[2]+' (%s)'%title)
             
         #ax[1].hlines(0.0,0.0,10.0,ls='dashed',color='maroon')
         ax[0].grid()
