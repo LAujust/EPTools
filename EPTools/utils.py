@@ -11,6 +11,7 @@ from astropy.utils.data import conf
 import sncosmo
 from ligo.gracedb.rest import GraceDb
 import ligo.skymap
+from scipy.special import gammainc, gammaincc, gammaincinv
 from astropy.table import Table, vstack
 from astropy.io import fits
 from astropy.time import Time
@@ -143,6 +144,14 @@ def li_ma_sigma(N_on, N_off, alpha):
     term1 = N_on * np.log((1 + alpha) / alpha * (N_on / (N_on + N_off)))
     term2 = N_off * np.log((1 + alpha) * (N_off / (N_on + N_off)))
     return np.sqrt(2 * (term1 + term2))
+
+def X_UL(Nsrc,Nbkg,exposure,alpha=1/12,factor=1e-9,CL = 0.9):
+    B = Nbkg * alpha
+    C_1 = gammaincc(Nsrc+1,B)
+    sC_1 = gammainc(Nsrc+1,B)
+    part1 = gammaincinv(Nsrc+1,CL*C_1+sC_1)
+    UL = part1 - B
+    return UL * factor / exposure
     
 def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs=True):
     """_summary_
