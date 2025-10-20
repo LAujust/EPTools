@@ -153,9 +153,8 @@ def X_UL(Nsrc,Nbkg,exposure,alpha=1/12,factor=1e-9,CL = 0.9):
     UL = part1 - B
     return UL * factor / exposure
     
-def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs=True):
+def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH_Galactic, PhoIndex, get_unabs=True,nH_Intrinsic=0, ins='WXT'):
     """_summary_
-
     Args:
         source_spec (_type_): _description_
         energy_l (_type_): _description_
@@ -167,18 +166,21 @@ def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH, PhoIndex, get_unabs=Tr
     Returns:
         _type_: _description_
     """
-    xs.Xset.abund = 'wilm'
+    xs.Xset.chatter = 0
+    xs.Xset.logChatter = 0
     xs.Fit.statMethod = 'cstat'
     spec = xs.Spectrum(source_spec)
     spec.ignore('**-%.1f %.1f-**'%(energy_l, energy_h))
     spec.background = None
-    model = xs.Model('tbabs*cflux*powerlaw')
+    model = xs.Model('tbabs*ztbabs*cflux*powerlaw')
     if not get_unabs:
-        model = xs.Model('cflux*tbabs*powerlaw')
-    model.TBabs.nH.values = nH
+        model = xs.Model('cflux*tbabs*ztbabs*powerlaw')
+    model.TBabs.nH.values = nH_Galactic
+    model.zTBabs.nH.values = nH_Intrinsic
+    model.zTBabs.Redshift.values = 0
     model.cflux.Emin = energy_l
     model.cflux.Emax = energy_h
-    model.cflux.lg10Flux = -6.0
+    model.cflux.lg10Flux = -9.0
     model.powerlaw.PhoIndex = PhoIndex
     model.powerlaw.norm = 1.0
     model.powerlaw.norm.frozen = True
@@ -431,4 +433,3 @@ x_instrument_energy_range = {
     'EP-FXT':[0.4,10],
     'XRT':[0.4,10]
 }
-
