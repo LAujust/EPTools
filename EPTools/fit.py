@@ -13,7 +13,7 @@ MODEL_COMP_PARAM = {
 
 
 def grp_data(sname,outputname,arf=None,rmf=None,group=1):
-    cmd = ['grppha %s %s'%(sname,outputname)]
+    cmd = ['grppha infile=%s outfile=%s chatter=0'%(sname,outputname)]
     comm = "comm='group min %s "%group
     if arf:
         comm += " & chkey ANCRFILE %s"%arf
