@@ -343,13 +343,17 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     lc_src = os.path.join(root,obsid)+snum+'.lc'
     #Designed for WXT
     #Plot curve
+    arf = rmf = None
     if ins == 'WXT':
-        snum = str(snum)
-        lc_src = glob.glob(os.path.join(root,'**%s.lc'%snum))[0]
-        lc_bkg = glob.glob(os.path.join(root,'**%sbk.lc'%snum))[0]
-        pha_src = glob.glob(os.path.join(root,'**%s.pha'%snum))[0]
-        arf = glob.glob(os.path.join(root,'**.arf'))[0]
-        rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
+        try:
+            snum = str(snum)
+            lc_src = glob.glob(os.path.join(root,'**%s.lc'%snum))[0]
+            lc_bkg = glob.glob(os.path.join(root,'**%sbk.lc'%snum))[0]
+            pha_src = glob.glob(os.path.join(root,'**%s.pha'%snum))[0]
+            arf = glob.glob(os.path.join(root,'**.arf'))[0]
+            rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
+        except:
+            print('Cannot find lc.')
     elif ins == 'FXT':
         lc_src = glob.glob(os.path.join(root,'**.lc'))[0]
         lc_bkg = glob.glob(os.path.join(root,'**bk**.lc'))[0]
