@@ -383,7 +383,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
 
     
     models = ['powerlaw','bbody','apec']
-    key_pars = {'powerlaw':['PhoIndex'],'bbody':['kT'],'apec':['kT']}
+    key_pars = {'powerlaw':['PhoIndex','lg10Flux'],'bbody':['kT','lg10Flux'],'apec':['kT','lg10Flux']}
     for model in models:
         if get_unabs:
             mname = 'tbabs*cflux*' + model
@@ -399,7 +399,17 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
             p = par_table_i[key_par]
             p_high = par_table_i['%s_err_high'%key_par]
             p_low = par_table_i['%s_err_low'%key_par]
-            model_leg += '%s = %.3f (+%.3f/-%.3f)\n'%(key_par,p,p_high-p,p-p_low)
+            
+            if key_par == 'lg10Flux':
+                ofm = int(np.floor(p))
+                p, p_high, p_low = 10**p, 10**p_high, 10**p_low
+                if get_unabs:
+                    key_par = 'Unabs Flux'
+                else:
+                     key_par = 'Obs Flux'
+                model_leg += '%s = $%.3f^{+%.3f}_{-%.3f}\\times 10^{%s}$\n'%(key_par,p/10**ofm,(p_high-p)/10**ofm,(p-p_low)/10**ofm,ofm)
+            else:
+                model_leg += '%s = %.3f (+%.3f/-%.3f)\n'%(key_par,p,p_high-p,p-p_low)
         if not nH:
             key_par = 'nH'
             p = par_table_i[key_par]
