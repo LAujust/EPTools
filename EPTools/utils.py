@@ -319,7 +319,7 @@ def Txx(times,rates,c=0.9):
     T5, T95 = times[i5], times[i95]
     return T95-T5
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step',N=500,snum_prefix=False,chatter=10):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step',N=500,get_unabs=True,chatter=10):
     """
     Perform quick analysis for TA.
 
@@ -381,7 +381,10 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
     models = ['powerlaw','bbody','apec']
     key_pars = {'powerlaw':['PhoIndex'],'bbody':['kT'],'apec':['kT']}
     for model in models:
-        mname = 'tbabs*cflux*' + model
+        if get_unabs:
+            mname = 'tbabs*cflux*' + model
+        else:
+            mname = 'cflux*tbabs*' + model
         fix_ = {model+'.norm':1,'cflux.Emin':erange[ins][0],'cflux.Emax':erange[ins][1]}
         if nH:
             fix_['TBabs.nH'] = nH
