@@ -15,11 +15,13 @@ from scipy.special import gammainc, gammaincc, gammaincinv
 from astropy.table import Table, vstack
 from astropy.io import fits
 from astropy.time import Time
-from .plot import *
-from .fit import *
+from astropy.table import Table
 sys.path.append('/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/python')
 sys.path.append('$HEADAS/lib/python')
 import xspec as xs # type: ignore
+from .plot import *
+from .fit import *
+
 
 
 def keV2Hz(kevs):

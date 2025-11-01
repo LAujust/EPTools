@@ -1,7 +1,4 @@
 from .utils import *
-import dynesty
-from astropy.table import Table
-import xspec as xs
 
 MODEL_COMP_PARAM = {
     'TBabs':['nH'],
