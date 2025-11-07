@@ -11,7 +11,7 @@ setup(
     url="https://github.com/yourusername/myproject",  # optional
     packages=find_packages(),              # automatically finds all packages
     install_requires=[
-        "numpy>=2.3",
+        "numpy>=2.2",
         "matplotlib>=3.5",
         "pandas>=2.2.2"
     ],
