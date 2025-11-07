@@ -352,6 +352,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
             lc_src = glob.glob(os.path.join(root,'**%s.lc'%snum))[0]
             lc_bkg = glob.glob(os.path.join(root,'**%sbk.lc'%snum))[0]
             pha_src = glob.glob(os.path.join(root,'**%s.pha'%snum))[0]
+            pha_bkg = glob.glob(os.path.join(root,'**%sbk.pha'%snum))[0]
             arf = glob.glob(os.path.join(root,'**.arf'))[0]
             rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
         except:
@@ -360,6 +361,7 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         lc_src = glob.glob(os.path.join(root,'**.lc'))[0]
         lc_bkg = glob.glob(os.path.join(root,'**bk**.lc'))[0]
         pha_src = glob.glob(os.path.join(root,'**src**.pha'))[0]
+        pha_bkg = glob.glob(os.path.join(root,'**bkg**.pha'))[0]
         arf = glob.glob(os.path.join(root,'**.arf'))[0]
         rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
     
@@ -378,9 +380,9 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         pha_grp_src = 'PC.pi'
         if os.path.exists(pha_grp_src):
             os.remove(pha_grp_src)
-        print(f"grppha infile={pha_src} outfile=!PC.pi comm='group min {group} & exit' > /dev/null")
+        print(f"grppha infile={pha_src} outfile=PC.pi chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {pha_bkg} & exit'")
         #grp_data(pha_src,outputname=pha_grp_src,arf=arf,rmf=rmf,group=group)
-        os.system(f"grppha infile={pha_src} outfile=PC.pi comm='group min {group} & exit' > /dev/null") 
+        os.system(f"grppha infile={pha_src} outfile=PC.pi chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {pha_bkg} & exit'") 
         pha_src = pha_grp_src
 
     

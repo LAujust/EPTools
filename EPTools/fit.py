@@ -9,17 +9,8 @@ MODEL_COMP_PARAM = {
 }
 
 
-def grp_data(sname,outputname,arf=None,rmf=None,group=1):
-    cmd = ['grppha infile=%s outfile=%s chatter=0'%(sname,outputname)]
-    comm = "comm='group min %s "%group
-    if arf:
-        comm += " & chkey ANCRFILE %s"%arf
-    if rmf:
-        comm += " & chkey RESPFILE %s"%rmf
-    comm += " & bad 0-29 & exit'"
-    cmd.append(comm)
-    print(cmd)
-    subprocess.run(cmd,capture_output=True, text=True)
+def grp_data(src,bkg,outputname='PC.pi',arf=None,rmf=None,group=1):
+    os.system(f"grppha infile={src} outfile=PC.pi chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {bkg} & exit'")
 
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**fixed_par):
     """
