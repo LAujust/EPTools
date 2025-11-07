@@ -54,5 +54,7 @@ EPTools.utils.TA_quick(obsid,snum,root,grp=grp,pha_file=pha_file,group=group,nH=
 
 ```
 
+More informations can be found in the [documentation](https://eptools.readthedocs.io/en/latest/).
+
 @copyright to Runduo Liang (Aujust)
 
