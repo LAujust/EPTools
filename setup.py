@@ -8,10 +8,10 @@ setup(
     description="An easy package/code for Einstein Probe (or other, e.g. XRT) data fetching and analysis.",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/myproject",  # optional
+    url="https://github.com/LAujust/EPTools",  # optional
     packages=find_packages(),              # automatically finds all packages
     install_requires=[
-        "numpy>=2.2",
+        "numpy>2.2",
         "matplotlib>=3.5",
         "pandas>=2.2.2"
     ],
