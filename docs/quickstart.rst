@@ -21,5 +21,5 @@ Installation
 
 .. code-block:: bash
 
-    pip install mypackage
+    pip install eptools
 
