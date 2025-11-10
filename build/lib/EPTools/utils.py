@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import sys, os, glob, re
 import astropy.units as u
-import subprocess
+import subprocess, warnings
 import astropy.constants as c
 from astroquery.heasarc import Heasarc
 from astropy.coordinates import SkyCoord
@@ -16,10 +16,36 @@ from astropy.io import fits
 from astropy.time import Time
 sys.path.append('/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/python')
 sys.path.append('$HEADAS/lib/python')
-import xspec as xs # type: ignore
+try:
+    import xspec
+except ImportError:
+    class _HeasoftDummy:
+        def __getattr__(self, name):
+            raise RuntimeError(
+                "HEASoft is not initialized or heasoftpy not installed. "
+                "Please run 'heasoft' and try again."
+            )
+    heasoftpy = _HeasoftDummy()
+    
 from .plot import *
 from .fit import *
 
+
+
+
+class HeaEnv:
+    def __init__(self,headas=None,caldb=None):
+        self.headas = headas
+        self.caldb = None
+    
+    def init_in_shell():
+        pass
+    
+    def init_in_notebook():
+        pass
+    
+    def _search_init_in_file():
+        pass
 
 
 def keV2Hz(kevs):
