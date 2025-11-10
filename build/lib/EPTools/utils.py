@@ -20,6 +20,7 @@ warnings.filterwarnings("ignore")
 try:
     import xspec
 except ImportError:
+    print("HEASoft is not initialized or heasoftpy not installed. ")
     class _HeasoftDummy:
         def __getattr__(self, name):
             raise RuntimeError(
