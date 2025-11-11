@@ -388,14 +388,14 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         try:
             pha_src = glob.glob(os.path.join(root,'fxt_b**src**.pha'))[0]
             pha_bkg = glob.glob(os.path.join(root,'fxt_b**bkg**.pha'))[0]
-            arf = glob.glob(os.path.join(root,'fxt_b**.arf'))[0]
-            rmf = glob.glob(os.path.join(root,'fxt_b**.rmf'))[0]
+            arf = glob.glob(os.path.join(root,'fxt_b**src**.arf'))[0]
+            rmf = glob.glob(os.path.join(root,'fxt_b**src**.rmf'))[0]
         except:
             try:
                 pha_src = glob.glob(os.path.join(root,'fxt_a**src**.pha'))[0]
                 pha_bkg = glob.glob(os.path.join(root,'fxt_a**bkg**.pha'))[0]
-                arf = glob.glob(os.path.join(root,'fxt_a**.arf'))[0]
-                rmf = glob.glob(os.path.join(root,'fxt_a**.rmf'))[0]
+                arf = glob.glob(os.path.join(root,'fxt_a**src**.arf'))[0]
+                rmf = glob.glob(os.path.join(root,'fxt_a**src**.rmf'))[0]
             except:
                 pha_src = glob.glob(os.path.join(root,'**src**.pha'))[0]
                 pha_bkg = glob.glob(os.path.join(root,'**bkg**.pha'))[0]
