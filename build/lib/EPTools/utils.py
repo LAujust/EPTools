@@ -385,10 +385,22 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         except:
             print('Cannot find lc.')
     elif ins == 'FXT':
-        pha_src = glob.glob(os.path.join(root,'**src**.pha'))[0]
-        pha_bkg = glob.glob(os.path.join(root,'**bkg**.pha'))[0]
-        arf = glob.glob(os.path.join(root,'**.arf'))[0]
-        rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
+        try:
+            pha_src = glob.glob(os.path.join(root,'**b**src**.pha'))[0]
+            pha_bkg = glob.glob(os.path.join(root,'**b**bkg**.pha'))[0]
+            arf = glob.glob(os.path.join(root,'**b**.arf'))[0]
+            rmf = glob.glob(os.path.join(root,'**b**.rmf'))[0]
+        except:
+            try:
+                pha_src = glob.glob(os.path.join(root,'**b**src**.pha'))[0]
+                pha_bkg = glob.glob(os.path.join(root,'**b**bkg**.pha'))[0]
+                arf = glob.glob(os.path.join(root,'**b**.arf'))[0]
+                rmf = glob.glob(os.path.join(root,'**b**.rmf'))[0]
+            except:
+                pha_src = glob.glob(os.path.join(root,'**src**.pha'))[0]
+                pha_bkg = glob.glob(os.path.join(root,'**bkg**.pha'))[0]
+                arf = glob.glob(os.path.join(root,'**.arf'))[0]
+                rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
         
         try:
             lc_src = glob.glob(os.path.join(root,'**.lc'))[0]
