@@ -145,8 +145,9 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
             raise KeyError('Not valid plotstyle (step/line)')
         
         ax[0].legend()
-        xmin, xmax = ax[1].get_xlim()
-        ax[1].set_xlim([np.max([xmin,0.5]),np.min([xmax,10])])
+        xmin, xmax = ax[0].get_xlim()
+        ax[0].set_xlim([np.max([xmin,0.5]),np.min([xmax,10])])
+        ax[0].set_ylim([1e-8,1e0])
         plt.grid()
         plt.tight_layout()
         if save_dir:

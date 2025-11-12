@@ -348,7 +348,7 @@ def Txx(times,rates,c=0.9):
     T5, T95 = times[i5], times[i95]
     return T95-T5
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step',N=500,get_unabs=True,chatter=10):
+def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step',N=500,get_unabs=True,chatter=10,module='B'):
     """
     Perform quick analysis for TA.
 
@@ -385,22 +385,31 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         except:
             print('Cannot find lc.')
     elif ins == 'FXT':
-        try:
-            pha_src = glob.glob(os.path.join(root,'fxt_b**src**.pha'))[0]
-            pha_bkg = glob.glob(os.path.join(root,'fxt_b**bkg**.pha'))[0]
-            arf = glob.glob(os.path.join(root,'fxt_b**src**.arf'))[0]
-            rmf = glob.glob(os.path.join(root,'fxt_b**src**.rmf'))[0]
-        except:
+        if module == None:
             try:
-                pha_src = glob.glob(os.path.join(root,'fxt_a**src**.pha'))[0]
-                pha_bkg = glob.glob(os.path.join(root,'fxt_a**bkg**.pha'))[0]
-                arf = glob.glob(os.path.join(root,'fxt_a**src**.arf'))[0]
-                rmf = glob.glob(os.path.join(root,'fxt_a**src**.rmf'))[0]
+                pha_src = glob.glob(os.path.join(root,'fxt_b**src**.pha'))[0]
+                pha_bkg = glob.glob(os.path.join(root,'fxt_b**bkg**.pha'))[0]
+                arf = glob.glob(os.path.join(root,'fxt_b**src**.arf'))[0]
+                rmf = glob.glob(os.path.join(root,'fxt_b**src**.rmf'))[0]
             except:
-                pha_src = glob.glob(os.path.join(root,'**src**.pha'))[0]
-                pha_bkg = glob.glob(os.path.join(root,'**bkg**.pha'))[0]
-                arf = glob.glob(os.path.join(root,'**.arf'))[0]
-                rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
+                try:
+                    pha_src = glob.glob(os.path.join(root,'fxt_a**src**.pha'))[0]
+                    pha_bkg = glob.glob(os.path.join(root,'fxt_a**bkg**.pha'))[0]
+                    arf = glob.glob(os.path.join(root,'fxt_a**src**.arf'))[0]
+                    rmf = glob.glob(os.path.join(root,'fxt_a**src**.rmf'))[0]
+                except:
+                    pha_src = glob.glob(os.path.join(root,'**src**.pha'))[0]
+                    pha_bkg = glob.glob(os.path.join(root,'**bkg**.pha'))[0]
+                    arf = glob.glob(os.path.join(root,'**.arf'))[0]
+                    rmf = glob.glob(os.path.join(root,'**.rmf'))[0]
+        else:
+            try:
+                pha_src = glob.glob(os.path.join(root,'fxt_%s**src**.pha'%(module.lower())))[0]
+                pha_bkg = glob.glob(os.path.join(root,'fxt_%s**bkg**.pha'%(module.lower())))[0]
+                arf = glob.glob(os.path.join(root,'fxt_%s**src**.arf'%(module.lower())))[0]
+                rmf = glob.glob(os.path.join(root,'fxt_%s**src**.rmf'%(module.lower())))[0]
+            except:
+                raise KeyError('No valid Files!')
         
         try:
             lc_src = glob.glob(os.path.join(root,'**.lc'))[0]
