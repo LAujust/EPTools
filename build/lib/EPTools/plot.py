@@ -148,10 +148,12 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
         xmin, xmax = ax[0].get_xlim()
         ax[0].set_xlim([np.max([xmin,0.5]),np.min([xmax,10])])
         ax[0].set_ylim([1e-8,1e0])
+        ax[0].tick_params(axis='both',which='both',direction='in')
+        ax[1].tick_params(axis='both',which='both',direction='in')
         plt.grid()
         plt.tight_layout()
         if save_dir:
-            plt.savefig(save_dir,dpi=300)
+            plt.savefig(save_dir,bbox_inches='tight',dpi=300)
         else:
             plt.show()
 
@@ -260,6 +262,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
             ax[i].legend()
             ax[i].grid()
             ax[i].set_ylabel('counts/s')
+            ax[i].tick_params(axis='both',which='both',direction='in')
 
         ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(T0,binsize))
         if save_dir:
