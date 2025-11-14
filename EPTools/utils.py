@@ -477,11 +477,11 @@ def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=No
         p = par_table_i[key_par]
         model_leg += '%s = %.3f'%(key_par,p)
             
-        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.pdf'%model,plotstyle=plotstyle,model_leg=model_leg,title=model)
+        xspec_plot(fitted_data,save_dir=os.path.join(root,obsid)+snum+'_%s.png'%model,plotstyle=plotstyle,model_leg=model_leg,title=model)
         
         par_table_i.write(os.path.join(root,'%s.csv'%model),format='csv',overwrite=True)
     
-    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.pdf',sep=sep,rx=rx)
+    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.png',sep=sep,rx=rx)
     
         
 
