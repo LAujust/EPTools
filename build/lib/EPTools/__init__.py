@@ -1,4 +1,4 @@
-__version__ = '0.01'
+from .__info__ import __version__
 
 from .utils import *
 from .crossmatch import *

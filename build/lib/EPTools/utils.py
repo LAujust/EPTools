@@ -10,6 +10,7 @@ from astropy.io.votable import parse_single_table
 from astropy.utils.data import conf
 from ligo.gracedb.rest import GraceDb
 import ligo.skymap
+from gdpyc import GasMap, DustMap
 from scipy.special import gammainc, gammaincc, gammaincinv
 from astropy.table import Table, vstack
 from astropy.io import fits

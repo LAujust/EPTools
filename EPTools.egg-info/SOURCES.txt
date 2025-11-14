@@ -1,6 +1,7 @@
 LICENSE
 README.md
 setup.py
+EPTools/__info__.py
 EPTools/__init__.py
 EPTools/crossmatch.py
 EPTools/fit.py
