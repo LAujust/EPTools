@@ -16,13 +16,32 @@ release = '0.0.1'
 
 # -- Path setup --------------------------------------------------------------
 
+# List of modules to mock when building docs
+autodoc_mock_imports = [
+    "astropy",
+    "astroquery",
+    "ligo.skymap",
+    "ligo_gracedb",
+    "ligo_segments",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "python_ligo_lw",
+    "scipy",
+    "setuptools",
+    "simsurvey",
+    "skypatrol",
+    "sncosmo",
+    "xspec"
+]
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
