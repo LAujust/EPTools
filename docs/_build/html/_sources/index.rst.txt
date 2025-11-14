@@ -17,4 +17,5 @@ documentation for details.
 
    quickstart
    basic
+   api
 

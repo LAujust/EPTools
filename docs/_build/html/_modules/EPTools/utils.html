@@ -1,0 +1,696 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPTools.utils &mdash; EPTools 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            EPTools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basic.html">Basic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">EPTools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">EPTools.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for EPTools.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">glob</span><span class="o">,</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">astropy.units</span> <span class="k">as</span> <span class="nn">u</span>
+<span class="kn">import</span> <span class="nn">subprocess</span><span class="o">,</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">astropy.constants</span> <span class="k">as</span> <span class="nn">c</span>
+<span class="kn">from</span> <span class="nn">astroquery.heasarc</span> <span class="kn">import</span> <span class="n">Heasarc</span>
+<span class="kn">from</span> <span class="nn">astropy.coordinates</span> <span class="kn">import</span> <span class="n">SkyCoord</span>
+<span class="kn">from</span> <span class="nn">astropy.io.votable</span> <span class="kn">import</span> <span class="n">parse_single_table</span>
+<span class="kn">from</span> <span class="nn">astropy.utils.data</span> <span class="kn">import</span> <span class="n">conf</span>
+<span class="kn">from</span> <span class="nn">ligo.gracedb.rest</span> <span class="kn">import</span> <span class="n">GraceDb</span>
+<span class="kn">import</span> <span class="nn">ligo.skymap</span>
+<span class="kn">from</span> <span class="nn">gdpyc</span> <span class="kn">import</span> <span class="n">GasMap</span><span class="p">,</span> <span class="n">DustMap</span>
+<span class="kn">from</span> <span class="nn">scipy.special</span> <span class="kn">import</span> <span class="n">gammainc</span><span class="p">,</span> <span class="n">gammaincc</span><span class="p">,</span> <span class="n">gammaincinv</span>
+<span class="kn">from</span> <span class="nn">astropy.table</span> <span class="kn">import</span> <span class="n">Table</span><span class="p">,</span> <span class="n">vstack</span>
+<span class="kn">from</span> <span class="nn">astropy.io</span> <span class="kn">import</span> <span class="n">fits</span>
+<span class="kn">from</span> <span class="nn">astropy.time</span> <span class="kn">import</span> <span class="n">Time</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;/Users/liangrunduo/heasoft-6.34/aarch64-apple-darwin23.5.0/lib/python&#39;</span><span class="p">)</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;$HEADAS/lib/python&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">xspec</span> <span class="k">as</span> <span class="nn">xs</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">xspec</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;HEASoft is not initialized or heasoftpy not installed. &quot;</span><span class="p">)</span>
+    <span class="k">class</span> <span class="nc">_HeasoftDummy</span><span class="p">:</span>
+        <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+                <span class="s2">&quot;HEASoft is not initialized or heasoftpy not installed. &quot;</span>
+                <span class="s2">&quot;Please run &#39;heasoft&#39; and try again.&quot;</span>
+            <span class="p">)</span>
+    <span class="n">heasoftpy</span> <span class="o">=</span> <span class="n">_HeasoftDummy</span><span class="p">()</span>
+    
+<span class="kn">from</span> <span class="nn">.plot</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.fit</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+
+
+<div class="viewcode-block" id="HeaEnv">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.HeaEnv">[docs]</a>
+<span class="k">class</span> <span class="nc">HeaEnv</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">headas</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">caldb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">headas</span> <span class="o">=</span> <span class="n">headas</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">caldb</span> <span class="o">=</span> <span class="kc">None</span>
+    
+<div class="viewcode-block" id="HeaEnv.init_in_shell">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.HeaEnv.init_in_shell">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_in_shell</span><span class="p">():</span>
+        <span class="k">pass</span></div>
+
+    
+<div class="viewcode-block" id="HeaEnv.init_in_notebook">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.HeaEnv.init_in_notebook">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_in_notebook</span><span class="p">():</span>
+        <span class="k">pass</span></div>
+
+    
+    <span class="k">def</span> <span class="nf">_search_init_in_file</span><span class="p">():</span>
+        <span class="k">pass</span></div>
+
+
+
+<div class="viewcode-block" id="keV2Hz">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.keV2Hz">[docs]</a>
+<span class="k">def</span> <span class="nf">keV2Hz</span><span class="p">(</span><span class="n">kevs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">2.417990504024e+17</span> <span class="o">*</span> <span class="n">kevs</span></div>
+
+
+<div class="viewcode-block" id="Hz2keV">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.Hz2keV">[docs]</a>
+<span class="k">def</span> <span class="nf">Hz2keV</span><span class="p">(</span><span class="n">nu</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">nu</span><span class="o">/</span><span class="mf">2.417990504024e+17</span></div>
+
+
+<div class="viewcode-block" id="keV2T">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.keV2T">[docs]</a>
+<span class="k">def</span> <span class="nf">keV2T</span><span class="p">(</span><span class="n">kevs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">11604525.00617</span> <span class="o">*</span> <span class="n">kevs</span></div>
+
+
+<div class="viewcode-block" id="keV2erg">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.keV2erg">[docs]</a>
+<span class="k">def</span> <span class="nf">keV2erg</span><span class="p">(</span><span class="n">kevs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="mf">1.602e-9</span> <span class="o">*</span> <span class="n">kevs</span></div>
+
+
+
+<div class="viewcode-block" id="lam2Hz">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.lam2Hz">[docs]</a>
+<span class="k">def</span> <span class="nf">lam2Hz</span><span class="p">(</span><span class="n">lams</span><span class="p">):</span>
+    <span class="s1">&#39;lams[float/np.array]:  wavelength in Angstrom&#39;</span>
+    <span class="n">lams</span> <span class="o">=</span> <span class="n">lams</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Angstrom</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">c</span><span class="o">/</span><span class="n">lams</span><span class="p">)</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="Hz2lam">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.Hz2lam">[docs]</a>
+<span class="k">def</span> <span class="nf">Hz2lam</span><span class="p">(</span><span class="n">nu</span><span class="p">):</span>
+    <span class="s1">&#39;Output:    wavelength in Angstrom&#39;</span>
+    <span class="n">nu</span> <span class="o">=</span> <span class="n">nu</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">Hz</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">c</span><span class="o">/</span><span class="n">nu</span><span class="p">)</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span> <span class="o">*</span> <span class="mf">1e8</span></div>
+
+
+<div class="viewcode-block" id="keV2lam">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.keV2lam">[docs]</a>
+<span class="k">def</span> <span class="nf">keV2lam</span><span class="p">(</span><span class="n">kevs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Hz2lam</span><span class="p">(</span><span class="n">keV2Hz</span><span class="p">(</span><span class="n">kevs</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="lam2keV">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.lam2keV">[docs]</a>
+<span class="k">def</span> <span class="nf">lam2keV</span><span class="p">(</span><span class="n">lams</span><span class="p">):</span>
+    <span class="k">return</span><span class="p">(</span><span class="n">Hz2keV</span><span class="p">(</span><span class="n">lam2Hz</span><span class="p">(</span><span class="n">lams</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="mag2flx">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.mag2flx">[docs]</a>
+<span class="k">def</span> <span class="nf">mag2flx</span><span class="p">(</span><span class="n">mags</span><span class="p">,</span><span class="n">lam_ref</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">FWHM</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Output[flx]:    in erg s^-1 cm^-2 Hz^-1</span>
+<span class="sd">    Output[flx]:    in erg s^-1 cm^-2 if wavelength and FWHM are given</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">lam_ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">FWHM</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">delta_nu</span> <span class="o">=</span> <span class="n">lam2Hz</span><span class="p">(</span><span class="n">lam_ref</span><span class="o">-</span><span class="mf">0.5</span><span class="o">*</span><span class="n">FWHM</span><span class="p">)</span> <span class="o">-</span> <span class="n">lam2Hz</span><span class="p">(</span><span class="n">lam_ref</span><span class="o">+</span><span class="mf">0.5</span><span class="o">*</span><span class="n">FWHM</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">delta_nu</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">0.4</span><span class="o">*</span><span class="p">(</span><span class="n">mags</span><span class="o">+</span><span class="mf">48.6</span><span class="p">)),</span> <span class="n">delta_nu</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="mf">0.4</span><span class="o">*</span><span class="p">(</span><span class="n">mags</span><span class="o">+</span><span class="mf">48.6</span><span class="p">))</span></div>
+
+    
+<span class="c1"># def mag2flx_sncosmo(mag,band):</span>
+<span class="c1">#     &#39;&#39;&#39;</span>
+<span class="c1">#     mag[float]:  AB magnitude</span>
+<span class="c1">#     band[str]:   band name customized to sncosmo</span>
+    
+<span class="c1">#     Output:</span>
+<span class="c1">#     flux[float]:   in erg/s/cm^2</span>
+<span class="c1">#     &#39;&#39;&#39;</span>
+<span class="c1">#     ab = sncosmo.get_magsystem(&#39;ab&#39;)</span>
+<span class="c1">#     flx = ab.band_mag_to_flux(mag,band)</span>
+<span class="c1">#     band = sncosmo.get_bandpass(band)</span>
+<span class="c1">#     wave_eff = band.wave_eff</span>
+<span class="c1">#     nu_eff = lam2Hz(wave_eff)</span>
+<span class="c1">#     e = (c.h*nu_eff*u.Hz).cgs.value</span>
+<span class="c1">#     #if you want to convert to erg you should multiple by e=(c.h*nu*u.Hz).cgs</span>
+<span class="c1">#     return e*flx</span>
+
+
+<div class="viewcode-block" id="flx2mag">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.flx2mag">[docs]</a>
+<span class="k">def</span> <span class="nf">flx2mag</span><span class="p">(</span><span class="n">flxs</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    flxs[float/array]:  in erg s^-1 cm^-2 Hz^-1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mf">2.5</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">flxs</span><span class="p">)</span> <span class="o">-</span> <span class="mf">48.6</span></div>
+
+
+<div class="viewcode-block" id="flx2lum">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.flx2lum">[docs]</a>
+<span class="k">def</span> <span class="nf">flx2lum</span><span class="p">(</span><span class="n">f</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    f[flux]:        erg/s/cm^2</span>
+<span class="sd">    d[distance]:    pc  </span>
+<span class="sd">    output[L]:      erg/s</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">f</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">erg</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span><span class="o">/</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">cm</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pc</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="o">*</span><span class="n">f</span>
+    <span class="k">return</span> <span class="n">L</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span></div>
+
+
+<div class="viewcode-block" id="lum2flux">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.lum2flux">[docs]</a>
+<span class="k">def</span> <span class="nf">lum2flux</span><span class="p">(</span><span class="n">L</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    L[luminosity]:  erg/s</span>
+<span class="sd">    d[distance]:    pc</span>
+<span class="sd">    output[f]:      erg/s/cm^2</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">L</span> <span class="o">=</span> <span class="n">L</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">erg</span><span class="o">/</span><span class="n">u</span><span class="o">.</span><span class="n">s</span>
+    <span class="c1">#f = f * u.erg/u.s/(u.cm)**2</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">u</span><span class="o">.</span><span class="n">pc</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">L</span><span class="o">/</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">d</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">cgs</span><span class="o">.</span><span class="n">value</span> </div>
+
+
+<div class="viewcode-block" id="lcurve2pha">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.lcurve2pha">[docs]</a>
+<span class="k">def</span> <span class="nf">lcurve2pha</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span><span class="n">out_dir</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span><span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">t_err</span><span class="p">,</span> <span class="n">cr</span><span class="p">,</span> <span class="n">cr_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">3</span><span class="p">]</span>
+    
+    <span class="n">tstart</span> <span class="o">=</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">tstop</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="n">t_err</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    
+    <span class="n">third</span> <span class="o">=</span> <span class="n">cr</span><span class="o">*</span><span class="p">(</span><span class="n">tstop</span><span class="o">-</span><span class="n">tstart</span><span class="p">)</span>
+    <span class="n">fourth</span> <span class="o">=</span> <span class="n">cr_err</span><span class="o">*</span><span class="p">(</span><span class="n">tstop</span><span class="o">-</span><span class="n">tstart</span><span class="p">)</span>
+    
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">tstart</span><span class="p">,</span><span class="n">tstop</span><span class="p">,</span><span class="n">third</span><span class="p">,</span><span class="n">fourth</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="fplot2pha">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.fplot2pha">[docs]</a>
+<span class="k">def</span> <span class="nf">fplot2pha</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span><span class="n">out_dir</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="n">data_dir</span><span class="p">,</span><span class="n">skiprows</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">cr</span><span class="p">,</span> <span class="n">cr_err</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">data</span><span class="p">[:,</span><span class="mi">2</span><span class="p">]</span>
+    
+    <span class="n">tstart</span> <span class="o">=</span> <span class="n">t</span>
+    <span class="n">tstop</span> <span class="o">=</span> <span class="n">t</span> <span class="o">+</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    
+    <span class="n">third</span> <span class="o">=</span> <span class="n">cr</span><span class="o">*</span><span class="p">(</span><span class="n">tstop</span><span class="o">-</span><span class="n">tstart</span><span class="p">)</span>
+    <span class="n">fourth</span> <span class="o">=</span> <span class="n">cr_err</span><span class="o">*</span><span class="p">(</span><span class="n">tstop</span><span class="o">-</span><span class="n">tstart</span><span class="p">)</span>
+    
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">tstart</span><span class="p">,</span><span class="n">tstop</span><span class="p">,</span><span class="n">third</span><span class="p">,</span><span class="n">fourth</span><span class="p">))</span><span class="o">.</span><span class="n">T</span>
+    
+    <span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span><span class="n">out</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span></div>
+
+
+<div class="viewcode-block" id="li_ma_sigma">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.li_ma_sigma">[docs]</a>
+<span class="k">def</span> <span class="nf">li_ma_sigma</span><span class="p">(</span><span class="n">N_on</span><span class="p">,</span> <span class="n">N_off</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">N_on</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">N_off</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>  <span class="c1"># or np.nan</span>
+    <span class="n">term1</span> <span class="o">=</span> <span class="n">N_on</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">/</span> <span class="n">alpha</span> <span class="o">*</span> <span class="p">(</span><span class="n">N_on</span> <span class="o">/</span> <span class="p">(</span><span class="n">N_on</span> <span class="o">+</span> <span class="n">N_off</span><span class="p">)))</span>
+    <span class="n">term2</span> <span class="o">=</span> <span class="n">N_off</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">((</span><span class="mi">1</span> <span class="o">+</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">N_off</span> <span class="o">/</span> <span class="p">(</span><span class="n">N_on</span> <span class="o">+</span> <span class="n">N_off</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">term1</span> <span class="o">+</span> <span class="n">term2</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="X_UL">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.X_UL">[docs]</a>
+<span class="k">def</span> <span class="nf">X_UL</span><span class="p">(</span><span class="n">Nsrc</span><span class="p">,</span><span class="n">Nbkg</span><span class="p">,</span><span class="n">exposure</span><span class="p">,</span><span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">12</span><span class="p">,</span><span class="n">factor</span><span class="o">=</span><span class="mf">1e-9</span><span class="p">,</span><span class="n">CL</span> <span class="o">=</span> <span class="mf">0.9</span><span class="p">):</span>
+    <span class="n">B</span> <span class="o">=</span> <span class="n">Nbkg</span> <span class="o">*</span> <span class="n">alpha</span>
+    <span class="n">C_1</span> <span class="o">=</span> <span class="n">gammaincc</span><span class="p">(</span><span class="n">Nsrc</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">sC_1</span> <span class="o">=</span> <span class="n">gammainc</span><span class="p">(</span><span class="n">Nsrc</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">B</span><span class="p">)</span>
+    <span class="n">part1</span> <span class="o">=</span> <span class="n">gammaincinv</span><span class="p">(</span><span class="n">Nsrc</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">CL</span><span class="o">*</span><span class="n">C_1</span><span class="o">+</span><span class="n">sC_1</span><span class="p">)</span>
+    <span class="n">UL</span> <span class="o">=</span> <span class="n">part1</span> <span class="o">-</span> <span class="n">B</span>
+    <span class="k">return</span> <span class="n">UL</span> <span class="o">*</span> <span class="n">factor</span> <span class="o">/</span> <span class="n">exposure</span></div>
+
+    
+<div class="viewcode-block" id="get_ctrt_to_flux">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.get_ctrt_to_flux">[docs]</a>
+<span class="k">def</span> <span class="nf">get_ctrt_to_flux</span><span class="p">(</span><span class="n">source_spec</span><span class="p">,</span> <span class="n">energy_l</span><span class="p">,</span> <span class="n">energy_h</span><span class="p">,</span> <span class="n">nH_Galactic</span><span class="p">,</span> <span class="n">PhoIndex</span><span class="p">,</span> <span class="n">get_unabs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">nH_Intrinsic</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ins</span><span class="o">=</span><span class="s1">&#39;WXT&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;_summary_</span>
+<span class="sd">    Args:</span>
+<span class="sd">        source_spec (_type_): _description_</span>
+<span class="sd">        energy_l (_type_): _description_</span>
+<span class="sd">        energy_h (_type_): _description_</span>
+<span class="sd">        nH (_type_): _description_</span>
+<span class="sd">        PhoIndex (_type_): _description_</span>
+<span class="sd">        get_unabs (bool, optional): _description_. Defaults to True.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        _type_: _description_</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Xset</span><span class="o">.</span><span class="n">chatter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Xset</span><span class="o">.</span><span class="n">logChatter</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">statMethod</span> <span class="o">=</span> <span class="s1">&#39;cstat&#39;</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="n">source_spec</span><span class="p">)</span>
+    <span class="n">spec</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s1">&#39;**-</span><span class="si">%.1f</span><span class="s1"> </span><span class="si">%.1f</span><span class="s1">-**&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">energy_l</span><span class="p">,</span> <span class="n">energy_h</span><span class="p">))</span>
+    <span class="n">spec</span><span class="o">.</span><span class="n">background</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="s1">&#39;tbabs*ztbabs*cflux*powerlaw&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">get_unabs</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="s1">&#39;cflux*tbabs*ztbabs*powerlaw&#39;</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">TBabs</span><span class="o">.</span><span class="n">nH</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">nH_Galactic</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">zTBabs</span><span class="o">.</span><span class="n">nH</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="n">nH_Intrinsic</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">zTBabs</span><span class="o">.</span><span class="n">Redshift</span><span class="o">.</span><span class="n">values</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">cflux</span><span class="o">.</span><span class="n">Emin</span> <span class="o">=</span> <span class="n">energy_l</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">cflux</span><span class="o">.</span><span class="n">Emax</span> <span class="o">=</span> <span class="n">energy_h</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">cflux</span><span class="o">.</span><span class="n">lg10Flux</span> <span class="o">=</span> <span class="o">-</span><span class="mf">9.0</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">powerlaw</span><span class="o">.</span><span class="n">PhoIndex</span> <span class="o">=</span> <span class="n">PhoIndex</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">powerlaw</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">powerlaw</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">frozen</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">fakeit_kwargs</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">fakeit_kwargs</span><span class="p">[</span><span class="s1">&#39;exposure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10000</span>
+    <span class="n">fakeit_kwargs</span><span class="p">[</span><span class="s1">&#39;correction&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">fakeit_kwargs</span><span class="p">[</span><span class="s1">&#39;backExposure&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">fakeit_kwargs</span><span class="p">[</span><span class="s1">&#39;fileName&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;temp_fake.pha&#39;</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">fakeit</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">xs</span><span class="o">.</span><span class="n">FakeitSettings</span><span class="p">(</span><span class="o">**</span><span class="n">fakeit_kwargs</span><span class="p">))</span>
+    <span class="n">spec</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">spec</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s1">&#39;**-</span><span class="si">%.1f</span><span class="s1"> </span><span class="si">%.1f</span><span class="s1">-**&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">energy_l</span><span class="p">,</span> <span class="n">energy_h</span><span class="p">))</span>
+    <span class="n">spec</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">ctrt</span> <span class="o">=</span> <span class="n">spec</span><span class="o">.</span><span class="n">rate</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">flux</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">cflux</span><span class="o">.</span><span class="n">lg10Flux</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">flux</span><span class="o">/</span><span class="n">ctrt</span></div>
+
+
+
+<div class="viewcode-block" id="retrive_gracedb">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.retrive_gracedb">[docs]</a>
+<span class="k">def</span> <span class="nf">retrive_gracedb</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">far</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#per yr</span>
+    <span class="n">far</span> <span class="o">=</span> <span class="n">far</span><span class="o">/</span><span class="mi">31557600</span>
+    <span class="n">far</span> <span class="o">=</span> <span class="s1">&#39;far &lt; 3.17e-8&#39;</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">GraceDb</span><span class="p">()</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">superevents</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">event_messages</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+        <span class="c1">#print(f&quot;Event ID: {event[&#39;superevent_id&#39;]}&quot;)</span>
+        <span class="nb">id</span> <span class="o">=</span> <span class="n">event</span><span class="p">[</span><span class="s1">&#39;superevent_id&#39;</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">circular</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span><span class="nb">id</span><span class="o">+</span><span class="s1">&#39;-update.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">circular</span> <span class="o">=</span> <span class="s1">&#39;No update circular&#39;</span>
+        <span class="n">event_messages</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">circular</span>
+
+    <span class="k">return</span> <span class="n">event_messages</span></div>
+
+
+<div class="viewcode-block" id="X2mAB">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.X2mAB">[docs]</a>
+<span class="k">def</span> <span class="nf">X2mAB</span><span class="p">(</span><span class="n">F_X</span><span class="p">,</span><span class="n">nu_min</span><span class="p">,</span><span class="n">nu_max</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert observed X-ray flux to AB magnitude.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters:</span>
+<span class="sd">    - F_X : float : Observed X-ray flux in erg/s/cm² (integrated over the band)</span>
+<span class="sd">    - E_min : float : Minimum energy of the X-ray band in keV</span>
+<span class="sd">    - E_max : float : Maximum energy of the X-ray band in keV</span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">    - m_AB : float : AB magnitude corresponding to the observed X-ray flux</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">F_nu</span> <span class="o">=</span> <span class="n">F_X</span><span class="o">/</span><span class="p">(</span><span class="n">nu_max</span><span class="o">-</span><span class="n">nu_min</span><span class="p">)</span>
+    <span class="c1"># Constants</span>
+    <span class="k">return</span> <span class="n">flx2mag</span><span class="p">(</span><span class="n">F_nu</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="EPexpo2mAB">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.EPexpo2mAB">[docs]</a>
+<span class="k">def</span> <span class="nf">EPexpo2mAB</span><span class="p">(</span><span class="n">expo</span><span class="p">,</span><span class="n">instrument</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    expo[float, array]:     exposure time in second</span>
+<span class="sd">    instrument[str]:        WXT or FXT</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">instrument</span> <span class="o">==</span> <span class="s1">&#39;WXT&#39;</span><span class="p">:</span>
+        <span class="n">F_X</span> <span class="o">=</span> <span class="mf">6.13670736e-09</span> <span class="o">*</span> <span class="n">expo</span><span class="o">**-</span><span class="mf">0.833761923</span>
+        <span class="n">E_min</span><span class="p">,</span> <span class="n">E_max</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">4</span>
+        <span class="n">nu_max</span><span class="p">,</span> <span class="n">nu_min</span> <span class="o">=</span> <span class="n">keV2Hz</span><span class="p">(</span><span class="n">E_max</span><span class="p">),</span> <span class="n">keV2Hz</span><span class="p">(</span><span class="n">E_min</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">instrument</span> <span class="o">==</span> <span class="s1">&#39;FXT&#39;</span><span class="p">:</span>
+        <span class="n">F_X</span> <span class="o">=</span> <span class="mf">5.49101782e-11</span> <span class="o">*</span> <span class="n">expo</span><span class="o">**-</span><span class="mf">0.812917739</span>
+        <span class="n">E_min</span><span class="p">,</span> <span class="n">E_max</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">10</span>
+        <span class="n">nu_max</span><span class="p">,</span> <span class="n">nu_min</span> <span class="o">=</span> <span class="n">keV2Hz</span><span class="p">(</span><span class="n">E_max</span><span class="p">),</span> <span class="n">keV2Hz</span><span class="p">(</span><span class="n">E_min</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Please type correct instrument name!&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">X2mAB</span><span class="p">(</span><span class="n">F_X</span><span class="p">,</span><span class="n">nu_min</span><span class="p">,</span><span class="n">nu_max</span><span class="p">)</span></div>
+
+
+<span class="c1"># def register_epband():</span>
+<span class="c1">#     &#39;Register X-ray filter:: epwxt, epfxt&#39;</span>
+<span class="c1">#     wave_ = np.linspace(3.0996033431592043, 24.796826745273634,20)</span>
+<span class="c1">#     trans_ = np.ones(20,)</span>
+<span class="c1">#     band = sncosmo.Bandpass(wave_, trans_, name=&#39;epwxt&#39;)</span>
+<span class="c1">#     sncosmo.register(band, &#39;epwxt&#39;,force=True)</span>
+
+<span class="c1">#     wave_ = np.linspace(1.2398413372636818, 24.796826745273634,20)</span>
+<span class="c1">#     trans_ = np.ones(20,)</span>
+<span class="c1">#     band = sncosmo.Bandpass(wave_, trans_, name=&#39;epfxt&#39;)</span>
+<span class="c1">#     sncosmo.register(band, &#39;epfxt&#39;,force=True)</span>
+    
+
+<div class="viewcode-block" id="BNS_ejecta_mass">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.BNS_ejecta_mass">[docs]</a>
+<span class="k">def</span> <span class="nf">BNS_ejecta_mass</span><span class="p">(</span><span class="n">Mc</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">R1</span><span class="p">,</span> <span class="n">R2</span><span class="p">,</span> <span class="n">Mtov</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="NSBH_ejecta_mass">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.NSBH_ejecta_mass">[docs]</a>
+<span class="k">def</span> <span class="nf">NSBH_ejecta_mass</span><span class="p">(</span><span class="n">M_BH</span><span class="p">,</span> <span class="n">M_NS</span><span class="p">,</span> <span class="n">Chi</span><span class="p">,</span> <span class="n">R_NS</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="read_curve">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.read_curve">[docs]</a>
+<span class="k">def</span> <span class="nf">read_curve</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">bkg</span><span class="p">,</span><span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">scale</span><span class="o">=</span><span class="mf">1.</span><span class="o">/</span><span class="mi">12</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdu</span><span class="p">:</span>
+        <span class="n">TSTART</span> <span class="o">=</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;TSTART&#39;</span><span class="p">]</span>
+        <span class="n">DATE_OBS</span> <span class="o">=</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">header</span><span class="p">[</span><span class="s1">&#39;DATE-OBS&#39;</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">TIME</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;TIME&#39;</span><span class="p">]</span>
+        <span class="n">RATE</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;RATE&#39;</span><span class="p">]</span>
+        <span class="n">ERROR</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;ERROR&#39;</span><span class="p">]</span>
+    <span class="k">with</span> <span class="n">fits</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">bkg</span><span class="p">)</span> <span class="k">as</span> <span class="n">hdu</span><span class="p">:</span>
+        <span class="n">bkg</span> <span class="o">=</span> <span class="n">hdu</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">data</span>
+        <span class="n">TIME_bkg</span> <span class="o">=</span> <span class="n">bkg</span><span class="p">[</span><span class="s1">&#39;TIME&#39;</span><span class="p">]</span>
+        <span class="n">RATE_bkg</span> <span class="o">=</span> <span class="n">bkg</span><span class="p">[</span><span class="s1">&#39;RATE&#39;</span><span class="p">]</span>
+        <span class="n">ERROR_bkg</span> <span class="o">=</span> <span class="n">bkg</span><span class="p">[</span><span class="s1">&#39;ERROR&#39;</span><span class="p">]</span>
+
+    <span class="n">t</span><span class="p">,</span><span class="n">rate</span><span class="p">,</span><span class="n">error</span> <span class="o">=</span> <span class="p">[],[],[]</span>
+    <span class="n">t_bkg</span><span class="p">,</span><span class="n">rate_bkg</span><span class="p">,</span><span class="n">error_bkg</span> <span class="o">=</span> <span class="p">[],[],[]</span> <span class="c1">#Scaled</span>
+    <span class="c1">#Rebin</span>
+    <span class="n">pin</span> <span class="o">=</span> <span class="n">TIME</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">while</span> <span class="n">pin</span><span class="o">+</span><span class="n">binsize</span> <span class="o">&lt;</span> <span class="n">TIME</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">((</span><span class="n">TIME</span><span class="o">&gt;</span><span class="n">pin</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">TIME</span><span class="o">&lt;</span><span class="n">pin</span><span class="o">+</span><span class="n">binsize</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">true_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">true_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">pin</span> <span class="o">+=</span> <span class="n">binsize</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">TIME</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">/</span><span class="n">true_size</span><span class="p">)</span>
+            <span class="n">rate</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">RATE</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">/</span><span class="n">true_size</span><span class="p">)</span>
+            <span class="n">error</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">ERROR</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">true_size</span><span class="p">)</span>
+            <span class="n">rate_bkg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scale</span><span class="o">*</span><span class="nb">sum</span><span class="p">(</span><span class="n">RATE_bkg</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span><span class="o">/</span><span class="n">true_size</span><span class="p">)</span>
+            <span class="n">error_bkg</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scale</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">ERROR_bkg</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">/</span><span class="n">true_size</span><span class="p">)</span>
+            <span class="n">pin</span> <span class="o">+=</span> <span class="n">binsize</span> 
+    <span class="k">return</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">rate</span><span class="p">,</span><span class="n">error</span><span class="p">),</span> <span class="p">(</span><span class="n">t_bkg</span><span class="p">,</span><span class="n">rate_bkg</span><span class="p">,</span><span class="n">error_bkg</span><span class="p">),</span> <span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rate</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rate_bkg</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">error</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">+</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">error_bkg</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)),</span> <span class="n">TSTART</span></div>
+
+
+<div class="viewcode-block" id="Txx">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.Txx">[docs]</a>
+<span class="k">def</span> <span class="nf">Txx</span><span class="p">(</span><span class="n">times</span><span class="p">,</span><span class="n">rates</span><span class="p">,</span><span class="n">c</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    c[float]:   confident level [0,1], default=0.9 represent 90% credible level</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">accumulated_rates</span> <span class="o">=</span> <span class="n">accumulated_rates</span>
+    <span class="n">rates</span> <span class="o">=</span> <span class="n">rates</span>
+    <span class="n">rates_err</span> <span class="o">=</span> <span class="n">rates_err</span>
+    <span class="n">C5</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">accumulated_rates</span><span class="p">,</span><span class="n">c</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">C95</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">accumulated_rates</span><span class="p">,</span><span class="mi">1</span><span class="o">-</span><span class="n">c</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">i5</span><span class="p">,</span> <span class="n">i95</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">accumulated_rates</span><span class="o">-</span><span class="n">C5</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">accumulated_rates</span><span class="o">-</span><span class="n">C95</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
+    <span class="n">T5</span><span class="p">,</span> <span class="n">T95</span> <span class="o">=</span> <span class="n">times</span><span class="p">[</span><span class="n">i5</span><span class="p">],</span> <span class="n">times</span><span class="p">[</span><span class="n">i95</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">T95</span><span class="o">-</span><span class="n">T5</span></div>
+
+
+<div class="viewcode-block" id="TA_quick">
+<a class="viewcode-back" href="../../api.html#EPTools.utils.TA_quick">[docs]</a>
+<span class="k">def</span> <span class="nf">TA_quick</span><span class="p">(</span><span class="n">obsid</span><span class="p">,</span><span class="n">snum</span><span class="p">,</span><span class="n">root</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">binsize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">pha_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rebin</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span><span class="n">grp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">nH</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rx</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">ins</span><span class="o">=</span><span class="s1">&#39;WXT&#39;</span><span class="p">,</span><span class="n">plotstyle</span><span class="o">=</span><span class="s1">&#39;step&#39;</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">get_unabs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">chatter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">module</span><span class="o">=</span><span class="s1">&#39;B&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Perform quick analysis for TA.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">    - obsid : str : e.g. ep06800000356wxt45</span>
+<span class="sd">    - snum : int : Source number</span>
+<span class="sd">    - root (str, optional): Root directory of Grace data. Defaults to &#39;./&#39;.</span>
+<span class="sd">    - binsize (int, optional): Size of bin in seconds. Defaults to 10.</span>
+<span class="sd">    - rebin (int, optional): Rebin factor. Defaults to 2.</span>
+<span class="sd">    - rx (float, optional): refine x range.</span>
+<span class="sd">    - ins (str, optional): Instrument name. Defaults to &#39;WXT&#39;.</span>
+<span class="sd">    - snum_prefix: specify snum in file searching</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#Designed for FXT</span>
+    <span class="c1">#Plot curve</span>
+    <span class="c1">#Move to root dir</span>
+    <span class="n">plotmode</span> <span class="o">=</span> <span class="s1">&#39;euf resid&#39;</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">snum</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">snum</span><span class="p">)</span>
+    <span class="n">lc_src</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">obsid</span><span class="p">)</span><span class="o">+</span><span class="n">snum</span><span class="o">+</span><span class="s1">&#39;.lc&#39;</span>
+    <span class="c1">#Designed for WXT</span>
+    <span class="c1">#Plot curve</span>
+    <span class="n">arf</span> <span class="o">=</span> <span class="n">rmf</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">ins</span> <span class="o">==</span> <span class="s1">&#39;WXT&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">snum</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">snum</span><span class="p">)</span>
+            <span class="n">lc_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**</span><span class="si">%s</span><span class="s1">.lc&#39;</span><span class="o">%</span><span class="n">snum</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">lc_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**</span><span class="si">%s</span><span class="s1">bk.lc&#39;</span><span class="o">%</span><span class="n">snum</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pha_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**</span><span class="si">%s</span><span class="s1">.pha&#39;</span><span class="o">%</span><span class="n">snum</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pha_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**</span><span class="si">%s</span><span class="s1">bk.pha&#39;</span><span class="o">%</span><span class="n">snum</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">arf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**.arf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">rmf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**.rmf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cannot find lc.&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">ins</span> <span class="o">==</span> <span class="s1">&#39;FXT&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">module</span> <span class="o">==</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pha_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_b**src**.pha&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">pha_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_b**bkg**.pha&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">arf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_b**src**.arf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">rmf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_b**src**.rmf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">pha_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_a**src**.pha&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">pha_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_a**bkg**.pha&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">arf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_a**src**.arf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">rmf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_a**src**.rmf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">pha_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**src**.pha&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">pha_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**bkg**.pha&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">arf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**.arf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">rmf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**.rmf&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">pha_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_</span><span class="si">%s</span><span class="s1">**src**.pha&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">lower</span><span class="p">())))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">pha_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_</span><span class="si">%s</span><span class="s1">**bkg**.pha&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">lower</span><span class="p">())))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">arf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_</span><span class="si">%s</span><span class="s1">**src**.arf&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">lower</span><span class="p">())))[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">rmf</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;fxt_</span><span class="si">%s</span><span class="s1">**src**.rmf&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">lower</span><span class="p">())))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No valid Files!&#39;</span><span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">lc_src</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**.lc&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">lc_bkg</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;**bk**.lc&#39;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Cannot find lc: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="o">%</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">lc_src</span> <span class="o">=</span> <span class="n">lc_bkg</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1"># lc_src = os.path.join(root,obsid)+snum+&#39;.lc&#39;</span>
+    <span class="c1"># lc_bkg = os.path.join(root,obsid)+snum+&#39;bk.lc&#39;</span>
+    <span class="c1"># pha_src = os.path.join(root,obsid)+snum+&#39;.pha&#39;</span>
+    <span class="c1"># arf = os.path.join(root,obsid)+snum+&#39;.arf&#39;</span>
+    <span class="c1"># rmf = os.path.join(root,obsid)+&#39;.rmf&#39;</span>
+    
+    <span class="k">if</span> <span class="n">pha_file</span><span class="p">:</span>
+        <span class="n">pha_src</span> <span class="o">=</span> <span class="n">pha_file</span>
+    
+    <span class="n">erange</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WXT&#39;</span><span class="p">:[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="s1">&#39;FXT&#39;</span><span class="p">:[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">10</span><span class="p">]}</span>
+    
+    <span class="k">if</span> <span class="n">grp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pha_file</span><span class="p">:</span>
+        <span class="n">pha_grp_src</span> <span class="o">=</span> <span class="s1">&#39;PC.pi&#39;</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pha_grp_src</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pha_grp_src</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;grppha infile=</span><span class="si">{</span><span class="n">pha_src</span><span class="si">}</span><span class="s2"> outfile=PC.pi chatter=0 comm=&#39;group min </span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2"> &amp; chkey RESPFILE </span><span class="si">{</span><span class="n">rmf</span><span class="si">}</span><span class="s2"> &amp; chkey ANCRFILE </span><span class="si">{</span><span class="n">arf</span><span class="si">}</span><span class="s2"> &amp; chkey BACKFILE </span><span class="si">{</span><span class="n">pha_bkg</span><span class="si">}</span><span class="s2"> &amp; exit&#39;&quot;</span><span class="p">)</span>
+        <span class="c1">#grp_data(pha_src,outputname=pha_grp_src,arf=arf,rmf=rmf,group=group)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;grppha infile=</span><span class="si">{</span><span class="n">pha_src</span><span class="si">}</span><span class="s2"> outfile=PC.pi chatter=0 comm=&#39;group min </span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2"> &amp; chkey RESPFILE </span><span class="si">{</span><span class="n">rmf</span><span class="si">}</span><span class="s2"> &amp; chkey ANCRFILE </span><span class="si">{</span><span class="n">arf</span><span class="si">}</span><span class="s2"> &amp; chkey BACKFILE </span><span class="si">{</span><span class="n">pha_bkg</span><span class="si">}</span><span class="s2"> &amp; exit&#39;&quot;</span><span class="p">)</span> 
+        <span class="n">pha_src</span> <span class="o">=</span> <span class="n">pha_grp_src</span>
+
+    
+    <span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;powerlaw&#39;</span><span class="p">,</span><span class="s1">&#39;bbody&#39;</span><span class="p">,</span><span class="s1">&#39;apec&#39;</span><span class="p">]</span>
+    <span class="n">key_pars</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;powerlaw&#39;</span><span class="p">:[</span><span class="s1">&#39;PhoIndex&#39;</span><span class="p">,</span><span class="s1">&#39;lg10Flux&#39;</span><span class="p">],</span><span class="s1">&#39;bbody&#39;</span><span class="p">:[</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span><span class="s1">&#39;lg10Flux&#39;</span><span class="p">],</span><span class="s1">&#39;apec&#39;</span><span class="p">:[</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span><span class="s1">&#39;lg10Flux&#39;</span><span class="p">]}</span>
+    <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">get_unabs</span><span class="p">:</span>
+            <span class="n">mname</span> <span class="o">=</span> <span class="s1">&#39;tbabs*cflux*&#39;</span> <span class="o">+</span> <span class="n">model</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">mname</span> <span class="o">=</span> <span class="s1">&#39;cflux*tbabs*&#39;</span> <span class="o">+</span> <span class="n">model</span>
+        <span class="n">fix_</span> <span class="o">=</span> <span class="p">{</span><span class="n">model</span><span class="o">+</span><span class="s1">&#39;.norm&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;cflux.Emin&#39;</span><span class="p">:</span><span class="n">erange</span><span class="p">[</span><span class="n">ins</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;cflux.Emax&#39;</span><span class="p">:</span><span class="n">erange</span><span class="p">[</span><span class="n">ins</span><span class="p">][</span><span class="mi">1</span><span class="p">]}</span>
+        <span class="k">if</span> <span class="n">nH</span><span class="p">:</span>
+            <span class="n">fix_</span><span class="p">[</span><span class="s1">&#39;TBabs.nH&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nH</span>
+        <span class="n">fitted_data</span><span class="p">,</span> <span class="n">par_table_i</span> <span class="o">=</span> <span class="n">xspec_fitting</span><span class="p">(</span><span class="n">pha_src</span><span class="p">,</span><span class="n">mname</span><span class="o">=</span><span class="n">mname</span><span class="p">,</span><span class="n">grp</span><span class="o">=</span><span class="n">grp</span><span class="p">,</span><span class="n">arf</span><span class="o">=</span><span class="n">arf</span><span class="p">,</span><span class="n">rmf</span><span class="o">=</span><span class="n">rmf</span><span class="p">,</span><span class="n">rebin</span><span class="o">=</span><span class="n">rebin</span><span class="p">,</span><span class="n">instrument</span><span class="o">=</span><span class="n">ins</span><span class="p">,</span><span class="n">plotmode</span><span class="o">=</span><span class="s1">&#39;ldata del&#39;</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="n">N</span><span class="p">,</span><span class="n">chatter</span><span class="o">=</span><span class="n">chatter</span><span class="p">,</span><span class="o">**</span><span class="n">fix_</span><span class="p">)</span>
+        
+        <span class="n">model_leg</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">key_par</span> <span class="ow">in</span> <span class="n">key_pars</span><span class="p">[</span><span class="n">model</span><span class="p">]:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="n">key_par</span><span class="p">]</span>
+            <span class="n">p_high</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_err_high&#39;</span><span class="o">%</span><span class="n">key_par</span><span class="p">]</span>
+            <span class="n">p_low</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_err_low&#39;</span><span class="o">%</span><span class="n">key_par</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="n">key_par</span> <span class="o">==</span> <span class="s1">&#39;lg10Flux&#39;</span><span class="p">:</span>
+                <span class="n">ofm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+                <span class="n">p</span><span class="p">,</span> <span class="n">p_high</span><span class="p">,</span> <span class="n">p_low</span> <span class="o">=</span> <span class="mi">10</span><span class="o">**</span><span class="n">p</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="n">p_high</span><span class="p">,</span> <span class="mi">10</span><span class="o">**</span><span class="n">p_low</span>
+                <span class="k">if</span> <span class="n">get_unabs</span><span class="p">:</span>
+                    <span class="n">key_par</span> <span class="o">=</span> <span class="s1">&#39;Unabs Flux&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                     <span class="n">key_par</span> <span class="o">=</span> <span class="s1">&#39;Obs Flux&#39;</span>
+                <span class="n">model_leg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> = $</span><span class="si">%.3f</span><span class="s1">^{+</span><span class="si">%.3f</span><span class="s1">}_{-</span><span class="si">%.3f</span><span class="s1">}</span><span class="se">\\</span><span class="s1">times 10^{</span><span class="si">%s</span><span class="s1">}$</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">key_par</span><span class="p">,</span><span class="n">p</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">ofm</span><span class="p">,(</span><span class="n">p_high</span><span class="o">-</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">ofm</span><span class="p">,(</span><span class="n">p</span><span class="o">-</span><span class="n">p_low</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="o">**</span><span class="n">ofm</span><span class="p">,</span><span class="n">ofm</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">model_leg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> = </span><span class="si">%.3f</span><span class="s1"> (+</span><span class="si">%.3f</span><span class="s1">/-</span><span class="si">%.3f</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">key_par</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">p_high</span><span class="o">-</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="o">-</span><span class="n">p_low</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nH</span><span class="p">:</span>
+            <span class="n">key_par</span> <span class="o">=</span> <span class="s1">&#39;nH&#39;</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="n">key_par</span><span class="p">]</span>
+            <span class="n">p_high</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_err_high&#39;</span><span class="o">%</span><span class="n">key_par</span><span class="p">]</span>
+            <span class="n">p_low</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">_err_low&#39;</span><span class="o">%</span><span class="n">key_par</span><span class="p">]</span>
+            <span class="n">model_leg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> = </span><span class="si">%.3e</span><span class="s1"> (+</span><span class="si">%.3e</span><span class="s1">/-</span><span class="si">%.3e</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">key_par</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">p_high</span><span class="o">-</span><span class="n">p</span><span class="p">,</span><span class="n">p</span><span class="o">-</span><span class="n">p_low</span><span class="p">)</span>
+        
+        <span class="n">key_par</span> <span class="o">=</span> <span class="s1">&#39;cstat/dof&#39;</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">par_table_i</span><span class="p">[</span><span class="n">key_par</span><span class="p">]</span>
+        <span class="n">model_leg</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> = </span><span class="si">%.3f</span><span class="s1">&#39;</span><span class="o">%</span><span class="p">(</span><span class="n">key_par</span><span class="p">,</span><span class="n">p</span><span class="p">)</span>
+            
+        <span class="n">xspec_plot</span><span class="p">(</span><span class="n">fitted_data</span><span class="p">,</span><span class="n">save_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">obsid</span><span class="p">)</span><span class="o">+</span><span class="n">snum</span><span class="o">+</span><span class="s1">&#39;_</span><span class="si">%s</span><span class="s1">.png&#39;</span><span class="o">%</span><span class="n">model</span><span class="p">,</span><span class="n">plotstyle</span><span class="o">=</span><span class="n">plotstyle</span><span class="p">,</span><span class="n">model_leg</span><span class="o">=</span><span class="n">model_leg</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+        
+        <span class="n">par_table_i</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">.csv&#39;</span><span class="o">%</span><span class="n">model</span><span class="p">),</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span><span class="n">overwrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    
+    <span class="n">lcurve_plot</span><span class="p">(</span><span class="n">src</span><span class="o">=</span><span class="n">lc_src</span><span class="p">,</span><span class="n">bkg</span><span class="o">=</span><span class="n">lc_bkg</span><span class="p">,</span><span class="n">binsize</span><span class="o">=</span><span class="n">binsize</span><span class="p">,</span><span class="n">save_dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span><span class="n">obsid</span><span class="p">)</span><span class="o">+</span><span class="n">snum</span><span class="o">+</span><span class="s1">&#39;_lc.png&#39;</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span><span class="n">rx</span><span class="o">=</span><span class="n">rx</span><span class="p">)</span></div>
+
+    
+        
+
+    
+    
+<span class="c1">#========================================================================#</span>
+
+<span class="n">pi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+<span class="n">band_wavelength</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;R&#39;</span><span class="p">:(</span><span class="mi">6427</span><span class="p">,</span><span class="mi">1298</span><span class="p">),</span>
+    <span class="s1">&#39;V&#39;</span><span class="p">:(</span><span class="mi">5345</span><span class="p">,</span><span class="mi">840</span><span class="p">),</span>
+    <span class="s1">&#39;g&#39;</span><span class="p">:(</span><span class="mi">4782</span><span class="p">,</span><span class="mi">1419</span><span class="p">),</span>
+    <span class="s1">&#39;r&#39;</span><span class="p">:(</span><span class="mi">6217</span><span class="p">,</span><span class="mi">1327</span><span class="p">),</span>
+    <span class="s1">&#39;i&#39;</span><span class="p">:(</span><span class="mi">7532</span><span class="p">,</span><span class="mi">1244</span><span class="p">),</span>
+    <span class="s1">&#39;z&#39;</span><span class="p">:(</span><span class="mi">8685</span><span class="p">,</span><span class="mi">1024</span><span class="p">),</span>
+    <span class="s1">&#39;L&#39;</span><span class="p">:(</span><span class="mi">5523</span><span class="p">,</span><span class="mi">2330</span><span class="p">),</span>
+    <span class="s1">&#39;u&#39;</span><span class="p">:(</span><span class="mi">3467</span><span class="p">,</span><span class="mi">668</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="n">x_instrument_energy_range</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;EP-WXT&#39;</span><span class="p">:[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span>
+    <span class="s1">&#39;EP-FXT&#39;</span><span class="p">:[</span><span class="mf">0.4</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+    <span class="s1">&#39;XRT&#39;</span><span class="p">:[</span><span class="mf">0.4</span><span class="p">,</span><span class="mi">10</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, R. -D. Liang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,308 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EPTools.fit &mdash; EPTools 0.0.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            EPTools
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../basic.html">Basic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">EPTools</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">EPTools.fit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for EPTools.fit</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">MODEL_COMP_PARAM</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;TBabs&#39;</span><span class="p">:[</span><span class="s1">&#39;nH&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;cflux&#39;</span><span class="p">:[</span><span class="s1">&#39;Emin&#39;</span><span class="p">,</span><span class="s1">&#39;Emax&#39;</span><span class="p">,</span><span class="s1">&#39;lg10Flux&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;powerlaw&#39;</span><span class="p">:[</span><span class="s1">&#39;PhoIndex&#39;</span><span class="p">,</span><span class="s1">&#39;norm&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;bbody&#39;</span><span class="p">:[</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span><span class="s1">&#39;norm&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;apec&#39;</span><span class="p">:[</span><span class="s1">&#39;Abundanc&#39;</span><span class="p">,</span><span class="s1">&#39;kT&#39;</span><span class="p">,</span><span class="s1">&#39;Redshift&#39;</span><span class="p">,</span><span class="s1">&#39;norm&#39;</span><span class="p">]</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="grp_data">
+<a class="viewcode-back" href="../../api.html#EPTools.fit.grp_data">[docs]</a>
+<span class="k">def</span> <span class="nf">grp_data</span><span class="p">(</span><span class="n">src</span><span class="p">,</span><span class="n">bkg</span><span class="p">,</span><span class="n">outputname</span><span class="o">=</span><span class="s1">&#39;PC.pi&#39;</span><span class="p">,</span><span class="n">arf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">group</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;grppha infile=</span><span class="si">{</span><span class="n">src</span><span class="si">}</span><span class="s2"> outfile=PC.pi chatter=0 comm=&#39;group min </span><span class="si">{</span><span class="n">group</span><span class="si">}</span><span class="s2"> &amp; chkey RESPFILE </span><span class="si">{</span><span class="n">rmf</span><span class="si">}</span><span class="s2"> &amp; chkey ANCRFILE </span><span class="si">{</span><span class="n">arf</span><span class="si">}</span><span class="s2"> &amp; chkey BACKFILE </span><span class="si">{</span><span class="n">bkg</span><span class="si">}</span><span class="s2"> &amp; exit&#39;&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="xspec_fitting">
+<a class="viewcode-back" href="../../api.html#EPTools.fit.xspec_fitting">[docs]</a>
+<span class="k">def</span> <span class="nf">xspec_fitting</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="n">mname</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span><span class="n">grp</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="n">arf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rmf</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">rebin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">stat</span><span class="o">=</span><span class="s1">&#39;cstat&#39;</span><span class="p">,</span><span class="n">instrument</span><span class="o">=</span><span class="s1">&#39;WXT&#39;</span><span class="p">,</span><span class="n">untied</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">plotmode</span><span class="o">=</span><span class="s1">&#39;data resid&#39;</span><span class="p">,</span><span class="n">chdir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">N</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span><span class="n">chatter</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="o">**</span><span class="n">fixed_par</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    !!!Single Spectrum Fitting or Simutaneously Fitting!!!</span>
+<span class="sd">    !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a </span>
+<span class="sd">    list of sname</span>
+<span class="sd">    Args:</span>
+<span class="sd">        sname[str/list]: spectrum file</span>
+<span class="sd">        mname (str): model name</span>
+<span class="sd">        grp (bool, optional): whether the file are grouped</span>
+<span class="sd">        arf (str/list, optional): anxilury file</span>
+<span class="sd">        rmf (str/list, optional): reponse file</span>
+<span class="sd">        rebin (float, optional): rebin</span>
+<span class="sd">        instrument (str or list, optional): &#39;WXT&#39; or &#39;FXT&#39;</span>
+<span class="sd">        plotmode (str, optional): xspec plot mode (e.g. data, ldata, edata)</span>
+<span class="sd">        untied (dict): untied parameters. e.g. [&#39;powerlaw.norm=1,0.1&#39;,...]</span>
+<span class="sd">        chdir (str): change home dir</span>
+<span class="sd">        fixed_par: fixed parameters. Second and third, forth model parameters are the same with the first one by default</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple or list of tuple: (energies,edeltas,rates,errors,model,labels)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">chdir</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">chdir</span><span class="p">)</span>
+    
+    <span class="n">xs</span><span class="o">.</span><span class="n">Xset</span><span class="o">.</span><span class="n">allowNewAttributes</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Xset</span><span class="o">.</span><span class="n">chatter</span> <span class="o">=</span> <span class="n">chatter</span>
+
+    <span class="n">erange</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;WXT&#39;</span><span class="p">:[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">4</span><span class="p">],</span><span class="s1">&#39;FXT&#39;</span><span class="p">:[</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">10</span><span class="p">]}</span>
+    
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">grp</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">arf</span><span class="p">:</span>
+                <span class="n">arf</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.(pha|pi)$&#39;</span><span class="p">,</span> <span class="s1">&#39;.arf&#39;</span><span class="p">,</span> <span class="n">sname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">rmf</span><span class="p">:</span>
+                <span class="n">rmf</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.(pha|pi)$&#39;</span><span class="p">,</span> <span class="s1">&#39;.rmf&#39;</span><span class="p">,</span> <span class="n">sname</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="n">arfFile</span><span class="o">=</span><span class="n">arf</span><span class="p">,</span><span class="n">respFile</span><span class="o">=</span><span class="n">rmf</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Spectrum</span><span class="p">(</span><span class="n">sname</span><span class="p">)</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;bad&quot;</span><span class="p">)</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;0.0-</span><span class="si">{:.1f}</span><span class="s2"> </span><span class="si">{:.1f}</span><span class="s2">-**&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span> 
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sn</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sname</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">grp</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">arf</span><span class="p">:</span>
+                    <span class="n">arf</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.(pha|pi)$&#39;</span><span class="p">,</span> <span class="s1">&#39;.arf&#39;</span><span class="p">,</span> <span class="n">sname</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">rmf</span><span class="p">:</span>
+                    <span class="n">rmf</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\.(pha|pi)$&#39;</span><span class="p">,</span> <span class="s1">&#39;.rmf&#39;</span><span class="p">,</span> <span class="n">sname</span><span class="p">)</span>
+
+                <span class="n">si</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="p">(</span><span class="n">sn</span><span class="p">,</span><span class="n">arfFile</span><span class="o">=</span><span class="n">arf</span><span class="p">[</span><span class="n">i</span><span class="p">],</span><span class="n">respFile</span><span class="o">=</span><span class="n">rmf</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">si</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;bad&quot;</span><span class="p">)</span>
+                <span class="n">si</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;0.0-</span><span class="si">{:.1f}</span><span class="s2"> </span><span class="si">{:.1f}</span><span class="s2">-**&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="c1"># xs.AllData(sn)</span>
+                <span class="c1"># xs.AllData(i+1).response.arf = arf[i]</span>
+                <span class="c1"># xs.AllData(i+1).response.rmf = rmf[i]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">sn</span><span class="p">))</span>
+                <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;bad&quot;</span><span class="p">)</span>
+                <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;0.0-</span><span class="si">{:.1f}</span><span class="s2"> </span><span class="si">{:.1f}</span><span class="s2">-**&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="mi">1</span><span class="p">]))</span>
+        
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">ignore</span><span class="p">(</span><span class="s2">&quot;bad&quot;</span><span class="p">)</span>
+            
+    <span class="c1">#Load Model and freeze parameters</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Model</span><span class="p">(</span><span class="n">mname</span><span class="p">)</span>
+    <span class="c1"># if isinstance(sname,list):</span>
+    <span class="c1">#     for i in range(len(sname)):</span>
+    <span class="c1">#         exec(&#39;m%s = AllModels(%s)&#39;%(i+1,i+1))</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="n">fixed_par</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">exec</span><span class="p">(</span><span class="s1">&#39;m.</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span><span class="n">value</span><span class="p">))</span>
+        <span class="n">exec</span><span class="p">(</span><span class="s1">&#39;m.</span><span class="si">{}</span><span class="s1">.frozen=True&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">untied</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">untied</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">if</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">v</span> <span class="k">else</span> <span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)]</span>  <span class="c1"># 转换成数字</span>
+            <span class="n">exec</span><span class="p">(</span><span class="s1">&#39;xs.AllModels(</span><span class="si">{}</span><span class="s1">).</span><span class="si">{}</span><span class="s1">=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">key</span><span class="p">,</span><span class="n">values</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="c1">#xs.Xset.chatter = 10</span>
+    
+    <span class="c1">#Fit</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">renorm</span><span class="p">(</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">nIterations</span> <span class="o">=</span> <span class="n">N</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">statMethod</span> <span class="o">=</span> <span class="n">stat</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">perform</span><span class="p">()</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">cstat</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">statistic</span>
+    <span class="n">dof</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">dof</span>
+    <span class="n">reduced_cstat</span> <span class="o">=</span> <span class="n">cstat</span> <span class="o">/</span> <span class="n">dof</span>
+    <span class="c1"># xs.Fit.goodness(200)</span>
+
+    <span class="c1"># Split on *, (, ), +</span>
+    <span class="n">parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[\*\(\)\+]&#39;</span><span class="p">,</span> <span class="n">mname</span><span class="p">)</span>
+    <span class="n">comps</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">parts</span> <span class="k">if</span> <span class="n">p</span><span class="p">]</span>
+
+    <span class="n">par_table</span> <span class="o">=</span> <span class="n">Table</span><span class="p">()</span>
+    <span class="n">par_table</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">mname</span><span class="p">]</span>
+    <span class="n">par_table</span><span class="p">[</span><span class="s1">&#39;sname&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">sname</span><span class="p">]</span>
+    <span class="n">par_table</span><span class="p">[</span><span class="s1">&#39;cstat/dof&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduced_cstat</span>
+
+    <span class="c1"># comps = m.componentNames</span>
+    <span class="c1"># print(comps)</span>
+    <span class="c1"># for comp in comps:</span>
+    <span class="c1">#     pars = []</span>
+    <span class="c1">#     print(comp)</span>
+    <span class="c1">#     exec(&quot;pars = m.%s.parameterNames&quot;%comp)</span>
+    <span class="c1">#     print(pars)</span>
+    <span class="c1">#     for par in pars:</span>
+    <span class="c1">#         exec(&quot;par_table[par]=[m.%s.%s.values[0]]&quot;%(comp,par))</span>
+
+    <span class="n">par_num</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">comp</span> <span class="ow">in</span> <span class="n">comps</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">comp</span> <span class="o">==</span> <span class="s1">&#39;tbabs&#39;</span><span class="p">:</span>
+            <span class="n">comp</span> <span class="o">=</span> <span class="s1">&#39;TBabs&#39;</span>
+        <span class="n">pars</span> <span class="o">=</span> <span class="n">MODEL_COMP_PARAM</span><span class="p">[</span><span class="n">comp</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="n">pars</span><span class="p">:</span>
+            <span class="n">par_num</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">Fit</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">par_num</span><span class="p">))</span>
+            <span class="c1">#print(&quot;print(par,m.%s.%s.error)&quot;%(comp,par))</span>
+            <span class="c1">#exec(&quot;print(par,m.%s.%s.values)&quot;%(comp,par))</span>
+            <span class="c1">#exec(&quot;print(par,m.%s.%s.error)&quot;%(comp,par))</span>
+            <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;par_table[par]=[m.</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">.values[0]]&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">comp</span><span class="p">,</span><span class="n">par</span><span class="p">))</span>
+            <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;par_table[&#39;</span><span class="si">%s</span><span class="s2">_err_low&#39;]=[m.</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">.error[0]]&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">par</span><span class="p">))</span>
+            <span class="n">exec</span><span class="p">(</span><span class="s2">&quot;par_table[&#39;</span><span class="si">%s</span><span class="s2">_err_high&#39;]=[m.</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">.error[1]]&quot;</span><span class="o">%</span><span class="p">(</span><span class="n">par</span><span class="p">,</span><span class="n">comp</span><span class="p">,</span><span class="n">par</span><span class="p">))</span>
+    
+    <span class="n">par_table</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">max_lines</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span><span class="n">max_width</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">calcFlux</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1"> </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">calcFlux</span><span class="p">(</span><span class="s1">&#39;0.5 2&#39;</span><span class="p">)</span>
+        <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">calcFlux</span><span class="p">(</span><span class="s1">&#39;0.5 </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sname</span><span class="p">)):</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">calcFlux</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:.1f}</span><span class="s1"> </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">calcFlux</span><span class="p">(</span><span class="s1">&#39;0.5 2&#39;</span><span class="p">)</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">calcFlux</span><span class="p">(</span><span class="s1">&#39;0.5 </span><span class="si">{:.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">erange</span><span class="p">[</span><span class="n">instrument</span><span class="p">][</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+
+    
+    
+    <span class="c1">#Plot data</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="s2">&quot;/null&quot;</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">xAxis</span><span class="o">=</span><span class="s2">&quot;keV&quot;</span>
+    <span class="k">if</span> <span class="n">rebin</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rebin</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">setRebin</span><span class="p">(</span><span class="n">minSig</span><span class="o">=</span><span class="n">rebin</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">maxBins</span><span class="o">=</span><span class="n">rebin</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">setRebin</span><span class="p">(</span><span class="n">rebin</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="n">plotmode</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="nb">str</span><span class="p">):</span>
+        <span class="n">energies</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">edeltas</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">xErr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">rates</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">errors</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">yErr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">labels</span><span class="p">()</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">model</span><span class="p">()</span>
+        <span class="n">resid</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">residerr</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">yErr</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">(</span><span class="n">energies</span><span class="p">,</span><span class="n">edeltas</span><span class="p">,</span><span class="n">rates</span><span class="p">,</span><span class="n">errors</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">resid</span><span class="p">,</span><span class="n">residerr</span><span class="p">,</span><span class="n">labels</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sname</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">labels</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sname</span><span class="p">)):</span>
+            <span class="n">energies</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">x</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">edeltas</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">xErr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">rates</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">yErr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">resid</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">y</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">residerr</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">Plot</span><span class="o">.</span><span class="n">yErr</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">energies</span><span class="p">,</span><span class="n">edeltas</span><span class="p">,</span><span class="n">rates</span><span class="p">,</span><span class="n">errors</span><span class="p">,</span><span class="n">model</span><span class="p">,</span><span class="n">resid</span><span class="p">,</span><span class="n">residerr</span><span class="p">,</span><span class="n">labels</span><span class="p">))</span>
+    
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllModels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="n">xs</span><span class="o">.</span><span class="n">AllData</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">par_table</span></div>
+
+
+
+<div class="viewcode-block" id="dynesty_fitting">
+<a class="viewcode-back" href="../../api.html#EPTools.fit.dynesty_fitting">[docs]</a>
+<span class="k">def</span> <span class="nf">dynesty_fitting</span><span class="p">(</span><span class="n">prior_transform</span><span class="p">,</span> <span class="n">log_likeli</span><span class="p">,</span><span class="n">bounds</span><span class="p">,</span><span class="n">nlive</span><span class="p">,</span><span class="n">log_args</span><span class="p">):</span>
+
+    <span class="k">pass</span></div>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, R. -D. Liang.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -18,7 +18,8 @@
       <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Basic usage" href="basic.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -41,9 +42,48 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic.html">Basic usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.BNS_ejecta_mass"><code class="docutils literal notranslate"><span class="pre">BNS_ejecta_mass()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.EPexpo2mAB"><code class="docutils literal notranslate"><span class="pre">EPexpo2mAB()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.HeaEnv"><code class="docutils literal notranslate"><span class="pre">HeaEnv</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#EPTools.utils.HeaEnv.init_in_notebook"><code class="docutils literal notranslate"><span class="pre">HeaEnv.init_in_notebook()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#EPTools.utils.HeaEnv.init_in_shell"><code class="docutils literal notranslate"><span class="pre">HeaEnv.init_in_shell()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.Hz2keV"><code class="docutils literal notranslate"><span class="pre">Hz2keV()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.Hz2lam"><code class="docutils literal notranslate"><span class="pre">Hz2lam()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.NSBH_ejecta_mass"><code class="docutils literal notranslate"><span class="pre">NSBH_ejecta_mass()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.TA_quick"><code class="docutils literal notranslate"><span class="pre">TA_quick()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.Txx"><code class="docutils literal notranslate"><span class="pre">Txx()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.X2mAB"><code class="docutils literal notranslate"><span class="pre">X2mAB()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.X_UL"><code class="docutils literal notranslate"><span class="pre">X_UL()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.flx2lum"><code class="docutils literal notranslate"><span class="pre">flx2lum()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.flx2mag"><code class="docutils literal notranslate"><span class="pre">flx2mag()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.fplot2pha"><code class="docutils literal notranslate"><span class="pre">fplot2pha()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.get_ctrt_to_flux"><code class="docutils literal notranslate"><span class="pre">get_ctrt_to_flux()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.keV2Hz"><code class="docutils literal notranslate"><span class="pre">keV2Hz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.keV2T"><code class="docutils literal notranslate"><span class="pre">keV2T()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.keV2erg"><code class="docutils literal notranslate"><span class="pre">keV2erg()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.keV2lam"><code class="docutils literal notranslate"><span class="pre">keV2lam()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.lam2Hz"><code class="docutils literal notranslate"><span class="pre">lam2Hz()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.lam2keV"><code class="docutils literal notranslate"><span class="pre">lam2keV()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.lcurve2pha"><code class="docutils literal notranslate"><span class="pre">lcurve2pha()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.li_ma_sigma"><code class="docutils literal notranslate"><span class="pre">li_ma_sigma()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.lum2flux"><code class="docutils literal notranslate"><span class="pre">lum2flux()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.mag2flx"><code class="docutils literal notranslate"><span class="pre">mag2flx()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.read_curve"><code class="docutils literal notranslate"><span class="pre">read_curve()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.utils.retrive_gracedb"><code class="docutils literal notranslate"><span class="pre">retrive_gracedb()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.fit.dynesty_fitting"><code class="docutils literal notranslate"><span class="pre">dynesty_fitting()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.fit.grp_data"><code class="docutils literal notranslate"><span class="pre">grp_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.fit.xspec_fitting"><code class="docutils literal notranslate"><span class="pre">xspec_fitting()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.plot.lcurve_plot"><code class="docutils literal notranslate"><span class="pre">lcurve_plot()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.plot.plot_gcn_data"><code class="docutils literal notranslate"><span class="pre">plot_gcn_data()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#EPTools.plot.xspec_plot"><code class="docutils literal notranslate"><span class="pre">xspec_plot()</span></code></a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -74,12 +114,274 @@
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 </div>
+<dl class="py function" id="module-EPTools.utils">
+<dt class="sig sig-object py" id="EPTools.utils.BNS_ejecta_mass">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">BNS_ejecta_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Mc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Mtov</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#BNS_ejecta_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.BNS_ejecta_mass" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.EPexpo2mAB">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">EPexpo2mAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#EPexpo2mAB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.EPexpo2mAB" title="Link to this definition"></a></dt>
+<dd><p>expo[float, array]:     exposure time in second
+instrument[str]:        WXT or FXT</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="EPTools.utils.HeaEnv">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">HeaEnv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">headas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caldb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#HeaEnv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.HeaEnv" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="EPTools.utils.HeaEnv.init_in_notebook">
+<span class="sig-name descname"><span class="pre">init_in_notebook</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#HeaEnv.init_in_notebook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.HeaEnv.init_in_notebook" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="EPTools.utils.HeaEnv.init_in_shell">
+<span class="sig-name descname"><span class="pre">init_in_shell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#HeaEnv.init_in_shell"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.HeaEnv.init_in_shell" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.Hz2keV">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">Hz2keV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nu</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#Hz2keV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.Hz2keV" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.Hz2lam">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">Hz2lam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nu</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#Hz2lam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.Hz2lam" title="Link to this definition"></a></dt>
+<dd><p>Output:    wavelength in Angstrom</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.NSBH_ejecta_mass">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">NSBH_ejecta_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">M_BH</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M_NS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Chi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_NS</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#NSBH_ejecta_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.NSBH_ejecta_mass" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.TA_quick">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">TA_quick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obsid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pha_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nH</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WXT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'step'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_unabs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chatter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'B'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#TA_quick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.TA_quick" title="Link to this definition"></a></dt>
+<dd><p>Perform quick analysis for TA.</p>
+<p>Args:
+- obsid : str : e.g. ep06800000356wxt45
+- snum : int : Source number
+- root (str, optional): Root directory of Grace data. Defaults to ‘./’.
+- binsize (int, optional): Size of bin in seconds. Defaults to 10.
+- rebin (int, optional): Rebin factor. Defaults to 2.
+- rx (float, optional): refine x range.
+- ins (str, optional): Instrument name. Defaults to ‘WXT’.
+- snum_prefix: specify snum in file searching</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.Txx">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">Txx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#Txx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.Txx" title="Link to this definition"></a></dt>
+<dd><p>c[float]:   confident level [0,1], default=0.9 represent 90% credible level</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.X2mAB">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">X2mAB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">F_X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nu_max</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#X2mAB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.X2mAB" title="Link to this definition"></a></dt>
+<dd><p>Convert observed X-ray flux to AB magnitude.</p>
+<p>Parameters:
+- F_X : float : Observed X-ray flux in erg/s/cm² (integrated over the band)
+- E_min : float : Minimum energy of the X-ray band in keV
+- E_max : float : Maximum energy of the X-ray band in keV</p>
+<p>Returns:
+- m_AB : float : AB magnitude corresponding to the observed X-ray flux</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.X_UL">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">X_UL</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Nsrc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Nbkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exposure</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.08333333333333333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">CL</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#X_UL"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.X_UL" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.flx2lum">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">flx2lum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#flx2lum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.flx2lum" title="Link to this definition"></a></dt>
+<dd><p>f[flux]:        erg/s/cm^2
+d[distance]:    pc
+output[L]:      erg/s</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.flx2mag">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">flx2mag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">flxs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#flx2mag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.flx2mag" title="Link to this definition"></a></dt>
+<dd><p>flxs[float/array]:  in erg s^-1 cm^-2 Hz^-1</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.fplot2pha">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">fplot2pha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#fplot2pha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.fplot2pha" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.get_ctrt_to_flux">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">get_ctrt_to_flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_spec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">energy_h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nH_Galactic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">PhoIndex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">get_unabs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nH_Intrinsic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WXT'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#get_ctrt_to_flux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.get_ctrt_to_flux" title="Link to this definition"></a></dt>
+<dd><p>_summary_
+:param source_spec: _description_
+:type source_spec: _type_
+:param energy_l: _description_
+:type energy_l: _type_
+:param energy_h: _description_
+:type energy_h: _type_
+:param nH: _description_
+:type nH: _type_
+:param PhoIndex: _description_
+:type PhoIndex: _type_
+:param get_unabs: _description_. Defaults to True.
+:type get_unabs: bool, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>_description_</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>_type_</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.keV2Hz">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">keV2Hz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kevs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#keV2Hz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.keV2Hz" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.keV2T">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">keV2T</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kevs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#keV2T"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.keV2T" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.keV2erg">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">keV2erg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kevs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#keV2erg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.keV2erg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.keV2lam">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">keV2lam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kevs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#keV2lam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.keV2lam" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.lam2Hz">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">lam2Hz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#lam2Hz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.lam2Hz" title="Link to this definition"></a></dt>
+<dd><p>lams[float/np.array]:  wavelength in Angstrom</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.lam2keV">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">lam2keV</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lams</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#lam2keV"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.lam2keV" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.lcurve2pha">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">lcurve2pha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#lcurve2pha"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.lcurve2pha" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.li_ma_sigma">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">li_ma_sigma</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N_on</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_off</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#li_ma_sigma"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.li_ma_sigma" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.lum2flux">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">lum2flux</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#lum2flux"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.lum2flux" title="Link to this definition"></a></dt>
+<dd><p>L[luminosity]:  erg/s
+d[distance]:    pc
+output[f]:      erg/s/cm^2</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.mag2flx">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">mag2flx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FWHM</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#mag2flx"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.mag2flx" title="Link to this definition"></a></dt>
+<dd><p>Output[flx]:    in erg s^-1 cm^-2 Hz^-1
+Output[flx]:    in erg s^-1 cm^-2 if wavelength and FWHM are given</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.read_curve">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">read_curve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.08333333333333333</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#read_curve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.read_curve" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.utils.retrive_gracedb">
+<span class="sig-prename descclassname"><span class="pre">EPTools.utils.</span></span><span class="sig-name descname"><span class="pre">retrive_gracedb</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/utils.html#retrive_gracedb"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.utils.retrive_gracedb" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function" id="module-EPTools.fit">
+<dt class="sig sig-object py" id="EPTools.fit.dynesty_fitting">
+<span class="sig-prename descclassname"><span class="pre">EPTools.fit.</span></span><span class="sig-name descname"><span class="pre">dynesty_fitting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prior_transform</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_likeli</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nlive</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/fit.html#dynesty_fitting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.fit.dynesty_fitting" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.fit.grp_data">
+<span class="sig-prename descclassname"><span class="pre">EPTools.fit.</span></span><span class="sig-name descname"><span class="pre">grp_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">outputname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'PC.pi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/fit.html#grp_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.fit.grp_data" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.fit.xspec_fitting">
+<span class="sig-prename descclassname"><span class="pre">EPTools.fit.</span></span><span class="sig-name descname"><span class="pre">xspec_fitting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rmf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rebin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cstat'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrument</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'WXT'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">untied</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotmode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data</span> <span class="pre">resid'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chdir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">500</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chatter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">fixed_par</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/fit.html#xspec_fitting"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.fit.xspec_fitting" title="Link to this definition"></a></dt>
+<dd><p>!!!Single Spectrum Fitting or Simutaneously Fitting!!!
+!!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a
+list of sname
+:param sname[str/list]: spectrum file
+:param mname: model name
+:type mname: str
+:param grp: whether the file are grouped
+:type grp: bool, optional
+:param arf: anxilury file
+:type arf: str/list, optional
+:param rmf: reponse file
+:type rmf: str/list, optional
+:param rebin: rebin
+:type rebin: float, optional
+:param instrument: ‘WXT’ or ‘FXT’
+:type instrument: str or list, optional
+:param plotmode: xspec plot mode (e.g. data, ldata, edata)
+:type plotmode: str, optional
+:param untied: untied parameters. e.g. [‘powerlaw.norm=1,0.1’,…]
+:type untied: dict
+:param chdir: change home dir
+:type chdir: str
+:param fixed_par: fixed parameters. Second and third, forth model parameters are the same with the first one by default</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(energies,edeltas,rates,errors,model,labels)</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>tuple or list of tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function" id="module-EPTools.plot">
+<dt class="sig sig-object py" id="EPTools.plot.lcurve_plot">
+<span class="sig-prename descclassname"><span class="pre">EPTools.plot.</span></span><span class="sig-name descname"><span class="pre">lcurve_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bkg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binsize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.08333333333333333</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rx</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/plot.html#lcurve_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.plot.lcurve_plot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.plot.plot_gcn_data">
+<span class="sig-prename descclassname"><span class="pre">EPTools.plot.</span></span><span class="sig-name descname"><span class="pre">plot_gcn_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'standard_gcn.pdf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ttype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/plot.html#plot_gcn_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.plot.plot_gcn_data" title="Link to this definition"></a></dt>
+<dd><p>Plot GCN Circilar data and EP-WXT/FXT data from .csv file
+ttype[int]:    0 for days; 1 for seconds in logsapce</p>
+<p>Data Format:</p>
+<p>data.csv: [dt, terr, instrument, mag, magerr, flux, fluxerr, detection, type]
+#flux in radio data often refers to flux density [mJy/uJy]
+#type should be either optical, x-ray or radio</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="EPTools.plot.xspec_plot">
+<span class="sig-prename descclassname"><span class="pre">EPTools.plot.</span></span><span class="sig-name descname"><span class="pre">xspec_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'random'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plotstyle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'step'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#4575b4'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_leg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/EPTools/plot.html#xspec_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#EPTools.plot.xspec_plot" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="basic.html" class="btn btn-neutral float-left" title="Basic usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

@@ -44,6 +44,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick Start</a></li>
 <li class="toctree-l1"><a class="reference internal" href="basic.html">Basic usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API Reference</a></li>
 </ul>
 
         </div>
@@ -89,7 +90,7 @@ release = ‘0.0.1’</p>
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath(‘../..’))</p>
+sys.path.insert(0, os.path.abspath(‘..’))</p>
 <p># – Project information —————————————————–</p>
 <p># The full version, including alpha/beta/rc tags
 autosummary_generate = True</p>
@@ -112,6 +113,30 @@ extensions = [</p>
 ‘sphinx.ext.coverage’,
 ‘sphinx_tabs.tabs’]</p>
 </div></blockquote>
+<p># List of modules to mock when building docs
+autodoc_mock_imports = [</p>
+<blockquote>
+<div><p>“numpy”,
+“pandas”,
+“matplotlib”,
+“astropy”,
+“astropy_healpix”,
+“astropy_healpix._core”,
+“astroquery”,
+“gdpyc”,
+“gdpyc.core”,
+“ligo.skymap”,
+“ligo_gracedb”,
+“ligo_segments”,
+“python_ligo_lw”,
+“scipy”,
+“setuptools”,
+“simsurvey”,
+“skypatrol”,
+“sncosmo”,
+“xspec”</p>
+</div></blockquote>
+<p>]</p>
 <p># Add any paths that contain templates here, relative to this directory.
 templates_path = [‘templates’]</p>
 <p># List of patterns, relative to source directory, that match files and
