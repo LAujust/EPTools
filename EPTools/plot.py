@@ -193,6 +193,8 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
             ax[0].set_xscale('log')
             ax[0].set_yscale('log')
             ax[1].set_ylabel('Residual')
+            ax[0].tick_params(axis='both',which='both',direction='in')
+            ax[1].tick_params(axis='both',which='both',direction='in')
             if not title:
                 ax[0].set_title(labels[2])
             else:
@@ -203,7 +205,7 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
         ax[1].grid()
 
         if save_dir:
-            plt.savefig(save_dir,dpi=300)
+            plt.savefig(save_dir,bbox_inches='tight',dpi=300)
         else:
             plt.show()
 
@@ -266,7 +268,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
 
         ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(T0,binsize))
         if save_dir:
-            plt.savefig(save_dir,dpi=300)
+            plt.savefig(save_dir,bbox_inches='tight',dpi=300)
         if show:
             plt.show()
         else:
@@ -285,12 +287,13 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
         ax.hlines(0,t[0],t[-1],color='k',ls='--')
         ax.legend()
         ax.grid()
+        ax.tick_params(axis='both',which='both',direction='in')
         ax.set_ylabel('counts/s')
         ax.set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(T0,binsize))
         if rx:
             ax.set_xlim(rx)
         if save_dir:
-            plt.savefig(save_dir,dpi=300)
+            plt.savefig(save_dir,bbox_inches='tight',dpi=300)
         if show:
             plt.show()
         else:
