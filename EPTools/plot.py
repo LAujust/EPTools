@@ -247,6 +247,11 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
             pin += binsize
             
             
+    #correct t
+    t = np.array(t)
+    if np.min(t)>1e8:
+        t -= TSTART
+            
     if sep:
         fig = plt.figure()
         gs = fig.add_gridspec(3,hspace=0)
@@ -266,7 +271,7 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
             ax[i].set_ylabel('counts/s')
             ax[i].tick_params(axis='both',which='both',direction='in')
 
-        ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'{} (bintime={:.1f}s)'.format(T0,binsize))
+        ax[2].set_xlabel('$\mathrm{T-T_{0}}=$'+'%s (bintime=%.1f s)'.format(T0,binsize))
         if save_dir:
             plt.savefig(save_dir,bbox_inches='tight',dpi=300)
         if show:

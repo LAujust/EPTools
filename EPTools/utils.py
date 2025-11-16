@@ -116,11 +116,15 @@ def flx2mag(flxs):
     """
     return -2.5*np.log10(flxs) - 48.6
 
-def flx2lum(f,d):
-    """
-    f[flux]:        erg/s/cm^2
-    d[distance]:    pc  
-    output[L]:      erg/s
+def flx2lum(f:float,d:float):
+    """convert observed flux to luminosity
+
+    Args:
+        f (float): flux in [erg/cm^2/s]
+        d (float): distance in [pc]
+
+    Returns:
+        float: luminosity in [erg/s]
     """
     f = f * u.erg/u.s/(u.cm)**2
     d = d * u.pc
@@ -168,7 +172,17 @@ def fplot2pha(data_dir,out_dir):
     np.savetxt(out_dir,out)
     return out
 
-def li_ma_sigma(N_on, N_off, alpha):
+def li_ma_sigma(N_on:float, N_off:float, alpha:float):
+    """significance based on Li-Ma formula
+
+    Args:
+        N_on (float): photons within src region
+        N_off (float): photons within bkg region
+        alpha (float): area ratio
+
+    Returns:
+        float: li-ma significance
+    """
     if N_on <= 0 or N_off <= 0:
         return 0.0  # or np.nan
     term1 = N_on * np.log((1 + alpha) / alpha * (N_on / (N_on + N_off)))
@@ -176,6 +190,20 @@ def li_ma_sigma(N_on, N_off, alpha):
     return np.sqrt(2 * (term1 + term2))
 
 def X_UL(Nsrc,Nbkg,exposure,alpha=1/12,factor=1e-9,CL = 0.9):
+    """X-ray upper limit
+
+    Args:
+        Nsrc (float): photons in src region
+        Nbkg (float): photons in bkg region
+        exposure (float): exposure time in [s]
+        alpha (float, optional): area ratio. Defaults to 1/12.
+        factor (float, optional): ctr to flux convertion factor. Defaults to 1e-9.
+        CL (float, optional): credible level. Defaults to 0.9.
+
+    Returns:
+        float: upper limit in CL
+    """
+    
     B = Nbkg * alpha
     C_1 = gammaincc(Nsrc+1,B)
     sC_1 = gammainc(Nsrc+1,B)
@@ -184,17 +212,17 @@ def X_UL(Nsrc,Nbkg,exposure,alpha=1/12,factor=1e-9,CL = 0.9):
     return UL * factor / exposure
     
 def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH_Galactic, PhoIndex, get_unabs=True,nH_Intrinsic=0, ins='WXT'):
-    """_summary_
+    """estimate ctr to flux convertion factor
     Args:
-        source_spec (_type_): _description_
-        energy_l (_type_): _description_
-        energy_h (_type_): _description_
-        nH (_type_): _description_
-        PhoIndex (_type_): _description_
-        get_unabs (bool, optional): _description_. Defaults to True.
+        source_spec (str): source spectrum filename
+        energy_l (float): enegry lower bound
+        energy_h (float): enegry higher bound
+        nH (float): nH in tbabs model
+        PhoIndex (float): phoindex of powerlaw model
+        get_unabs (bool, optional): calculate absorbed flux. Defaults to True.
 
     Returns:
-        _type_: _description_
+        float: convertion factor
     """
     xs.Xset.chatter = 0
     xs.Xset.logChatter = 0
@@ -303,7 +331,18 @@ def BNS_ejecta_mass(Mc, q, R1, R2, Mtov):
 def NSBH_ejecta_mass(M_BH, M_NS, Chi, R_NS):
     pass
 
-def read_curve(src,bkg,binsize=10,scale=1./12):
+def read_curve(src:str,bkg:str,binsize:int=10,scale:float=1./12):
+    """read .lc file
+
+    Args:
+        src (str): src curve
+        bkg (str): bkg curve
+        binsize (int, optional): time bin size. Defaults to 10.
+        scale (float, optional): area ratio. Defaults to 1/12.
+
+    Returns:
+        tuple: src, bkg rate and TSTART
+    """
     with fits.open(src) as hdu:
         TSTART = hdu[0].header['TSTART']
         DATE_OBS = hdu[0].header['DATE-OBS']
@@ -351,6 +390,13 @@ def Txx(times,rates,c=0.9):
 
 
 def check_cosmic_ray(path:str,s_num:int,cts_thres:float=5):
+    """check whether the detection is cosmic ray
+
+    Args:
+        path (str): path to your data (standard WXT level 2 data)
+        s_num (int): source number
+        cts_thres (float, optional): count rate threshold. Defaults to 5.
+    """
     
     cat_hdu = fits.open(glob.glob(os.path.join(path,'**.cat')))
     evt_hdu = fits.open(glob.glob(os.path.join(path,'**po_cl.evt')))
@@ -410,19 +456,30 @@ def check_cosmic_ray(path:str,s_num:int,cts_thres:float=5):
     plt.show()
 
 
-def TA_quick(obsid,snum,root='',binsize=10,pha_file=None,rebin=2,grp=False,nH=None,group=None,rx=None,sep=True,ins='WXT',plotstyle='step',N=500,get_unabs=True,chatter=10,module='B'):
-    """
-    Perform quick analysis for TA.
+def TA_quick(obsid:str,snum:int,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B'):
+    """Quick assembled tool for temporal and spectrum analysis for TA.
 
     Args:
-    - obsid : str : e.g. ep06800000356wxt45
-    - snum : int : Source number
-    - root (str, optional): Root directory of Grace data. Defaults to './'.
-    - binsize (int, optional): Size of bin in seconds. Defaults to 10.
-    - rebin (int, optional): Rebin factor. Defaults to 2.
-    - rx (float, optional): refine x range.
-    - ins (str, optional): Instrument name. Defaults to 'WXT'.
-    - snum_prefix: specify snum in file searching
+        obsid (str): Observation ID;
+        snum (int): source number;
+        root (str, optional): path to data folder. Defaults to '';
+        binsize (int, optional): lightcurve bin size. Defaults to 10.
+        pha_file (optional): pha file name if you already have a grouped pha file. Defaults to None;
+        rebin (int, optional): xspec plot rebin. Defaults to 2;
+        grp (bool, optional): whether to group data. Defaults to False;
+        nH (_type_, optional): Galactic hydrogen column density, take as free parameter if set None. Defaults to None;
+        group (optional): minimal photons in a group, passing to grppha. Defaults to None;
+        rx (optional): refined x range in curve plot. Defaults to None;
+        sep (bool, optional): whether to plot src/net/bkg curve in different subplots. Defaults to True;
+        ins (str, optional): EP instruments data to be proceeded. Defaults to 'WXT';
+        plotstyle (str, optional): plot spectrum style of model. Defaults to 'step';
+        N (int, optional): Number of iteration for fitting. Defaults to 500;
+        get_unabs (bool, optional): calculate unabsorbed flux. Defaults to True;
+        chatter (int, optional): chatter level. Defaults to 10.
+        module (str, optional): FXT module (A or B). Defaults to 'B'.
+
+    Raises:
+        KeyError: _description_
     """
     #Designed for FXT
     #Plot curve
