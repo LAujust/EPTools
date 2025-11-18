@@ -462,7 +462,7 @@ def TA_quick(obsid:str,snum:int,root:str='',binsize:int=10,pha_file=None,rebin=2
 
     Args:
         obsid (str): Observation ID;
-        snum (int): source number;
+        snum (str): source number, e.g. 's1';
         root (str, optional): path to data folder. Defaults to '';
         binsize (int, optional): lightcurve bin size. Defaults to 10.
         pha_file (optional): pha file name if you already have a grouped pha file. Defaults to None;
