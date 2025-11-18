@@ -457,7 +457,7 @@ def check_cosmic_ray(path:str,s_num:int,cts_thres:float=5):
     plt.show()
 
 
-def TA_quick(obsid:str,snum:int,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B'):
+def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B'):
     """Quick assembled tool for temporal and spectrum analysis for TA.
 
     Args:
