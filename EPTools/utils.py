@@ -457,7 +457,7 @@ def check_cosmic_ray(path:str,s_num:int,cts_thres:float=5):
     plt.show()
 
 
-def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B'):
+def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',scale:float=1./12,plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B'):
     """Quick assembled tool for temporal and spectrum analysis for TA.
 
     Args:
@@ -601,7 +601,7 @@ def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2
         
         par_table_i.write(os.path.join(root,'%s.csv'%model),format='csv',overwrite=True)
     
-    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,save_dir=os.path.join(root,obsid)+snum+'_lc.png',sep=sep,rx=rx)
+    lcurve_plot(src=lc_src,bkg=lc_bkg,binsize=binsize,scale=scale,save_dir=os.path.join(root,obsid)+snum+'_lc.png',sep=sep,rx=rx)
     
         
 
