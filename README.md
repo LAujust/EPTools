@@ -54,6 +54,15 @@ EPTools.utils.TA_quick(obsid,snum,root,grp=grp,pha_file=pha_file,group=group,nH=
 
 ```
 
+
+## Note for fxtchain
+
+```
+fxtchain indir={your_input_path} outdir={your_output_path} exitstage=2 
+expr="ELV>5&&DYE_ELV>30&&SAA==0&&STABILITY==3&&ANG_DIST<0.2" \
+datamode=ff srcffregion={your_ff_src_region} bkgffregion={your_ff_bkg_region}
+```
+
 More informations can be found in the [documentation](https://eptools.readthedocs.io/en/latest/).
 
 @copyright to Runduo Liang (Aujust)
