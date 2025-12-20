@@ -2,6 +2,11 @@ from .utils import *
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from astropy.io import fits
+from astropy.wcs import WCS
+from astropy.visualization import ZScaleInterval
+from astropy.nddata import Cutout2D
+import plotly.express as px
+import re
 
 DEFAULT_COLORS = ['#002FA7','#FFE76F',
                   '#01847F','#F9D2E4',
@@ -304,3 +309,74 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
         else:
             return fig, ax
 
+
+
+def plot_fits_with_region(fits_dir, reg_file, contrast=0.2, plot_method='matplotlib', output_file=None):
+    """
+    Plot an astronomical FITS image with a region marker.
+
+    Parameters:
+    - fits_dir (str): Path to the FITS file.
+    - reg_file (str): Path to the region file (assumes DS9 region format).
+    - plot_method (str): Plotting method, either 'matplotlib' or 'plotly'.
+    - output_file (str): Path to save the output plot (optional).
+    """
+    # Read the FITS file
+    with fits.open(fits_dir) as hdul:
+        data = hdul[0].data
+        header = hdul[0].header
+        wcs = WCS(header)
+
+    # Read the region file (assumes DS9 region format)
+    with open(reg_file, 'r') as f:
+        region_line = f.readline().strip()
+        match = re.search(r'circle\(([^,]+),([^,]+),([^\)]+)\)', region_line)
+        if not match:
+            raise ValueError("Region file format not recognized. Expected DS9 circle format.")
+        ra, dec, radius = map(float, match.groups())
+
+    # Create a SkyCoord object for the region center
+    region_center = SkyCoord(ra, dec, unit='deg')
+
+    # Perform a cutout of the image (20'x20') centered on the region center
+    cutout_size = (20 * u.arcmin, 20 * u.arcmin)  # 20 arcminutes in arcseconds
+    cutout = Cutout2D(data, region_center, cutout_size, wcs=wcs)
+
+    # Normalize the image using ZScale
+    zscale = ZScaleInterval(contrast=contrast)
+    vmin, vmax = zscale.get_limits(cutout.data)
+
+    # Plot using the specified method
+    if plot_method == 'matplotlib':
+        fig, ax = plt.subplots(subplot_kw={'projection': cutout.wcs})
+        im = ax.imshow(cutout.data, origin='lower', cmap='gray', vmin=vmin, vmax=vmax)
+        ax.set_xlabel('RA')
+        ax.set_ylabel('Dec')
+        ax.set_title('FITS Image with Region')
+        # Add the region marker
+        region_pix = cutout.wcs.world_to_pixel(region_center)
+        radius_pix = radius / cutout.wcs.pixel_scale_matrix[0, 0]
+        circle = plt.Circle(region_pix, radius_pix, color='red', fill=False)
+        ax.add_artist(circle)
+        plt.colorbar(im, ax=ax, label='Pixel Value')
+        if output_file:
+            plt.savefig(output_file, bbox_inches='tight', dpi=300)
+        plt.show()
+
+    elif plot_method == 'plotly':
+        # Create a plotly figure
+        fig = px.imshow(cutout.data, color_continuous_scale='gray', origin='lower', zmin=vmin, zmax=vmax)
+        fig.update_layout(title='FITS Image with Region', xaxis_title='RA', yaxis_title='Dec')
+        # Add the region marker
+        region_pix = cutout.wcs.world_to_pixel(region_center)
+        fig.add_shape(type='circle',
+                      xref='x', yref='y',
+                      x0=region_pix[0] - radius_pix, x1=region_pix[0] + radius_pix,
+                      y0=region_pix[1] - radius_pix, y1=region_pix[1] + radius_pix,
+                      line=dict(color='red'))
+        if output_file:
+            fig.write_html(output_file)
+        fig.show()
+
+    else:
+        raise ValueError("Invalid plot method. Choose 'matplotlib' or 'plotly'.")
