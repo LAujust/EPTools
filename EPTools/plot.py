@@ -5,6 +5,7 @@ from astropy.io import fits
 from astropy.wcs import WCS
 from astropy.visualization import ZScaleInterval
 from astropy.nddata import Cutout2D
+from matplotlib.patches import Circle
 import plotly.express as px
 import re
 
@@ -311,15 +312,22 @@ def lcurve_plot(src,bkg,save_dir=None,binsize=10,scale=1./12,rx=None,sep=False,s
 
 
 
-def plot_fits_with_region(fits_dir, reg_file, contrast=0.2, plot_method='matplotlib', output_file=None):
-    """
-    Plot an astronomical FITS image with a region marker.
+from matplotlib.patches import Circle
 
-    Parameters:
-    - fits_dir (str): Path to the FITS file.
-    - reg_file (str): Path to the region file (assumes DS9 region format).
-    - plot_method (str): Plotting method, either 'matplotlib' or 'plotly'.
-    - output_file (str): Path to save the output plot (optional).
+def plot_fits_with_region(fits_dir, reg_file, contrast=0.2, plot_method='matplotlib',size=1, output_file=None):
+    """Plot a FITS image with a specified region from a DS9 region file.
+
+    Args:
+        fits_dir (str): image FITS file path.
+        reg_file (str): region file path in DS9 format.
+        contrast (float, optional): zscale constrast. Defaults to 0.2.
+        plot_method (str, optional): Defaults to 'matplotlib'. Options: 'matplotlib', 'plotly'.
+        size (int, optional): image size to plot in degree. Defaults to 1.
+        output_file (str, optional): output image. Defaults to None.
+
+    Raises:
+        ValueError: _description_
+        ValueError: _description_
     """
     # Read the FITS file
     with fits.open(fits_dir) as hdul:
@@ -327,19 +335,22 @@ def plot_fits_with_region(fits_dir, reg_file, contrast=0.2, plot_method='matplot
         header = hdul[0].header
         wcs = WCS(header)
 
-    # Read the region file (assumes DS9 region format)
+     # Read the region file
     with open(reg_file, 'r') as f:
-        region_line = f.readline().strip()
-        match = re.search(r'circle\(([^,]+),([^,]+),([^\)]+)\)', region_line)
-        if not match:
+        lines = [line for line in f.readlines() if line.strip().lower().startswith('circle')]
+        print(lines)
+
+        match = re.search(r'circle\s*\(\s*([^,]+)\s*,\s*([^,]+)\s*,\s*([^\)"]+)', lines[0])
+        if match:
+            ra, dec, radius = map(float, match.groups())
+        else:
             raise ValueError("Region file format not recognized. Expected DS9 circle format.")
-        ra, dec, radius = map(float, match.groups())
 
     # Create a SkyCoord object for the region center
     region_center = SkyCoord(ra, dec, unit='deg')
 
-    # Perform a cutout of the image (20'x20') centered on the region center
-    cutout_size = (20 * u.arcmin, 20 * u.arcmin)  # 20 arcminutes in arcseconds
+    # Perform a cutout of the image
+    cutout_size = (size * u.deg, size * u.deg) 
     cutout = Cutout2D(data, region_center, cutout_size, wcs=wcs)
 
     # Normalize the image using ZScale
@@ -348,7 +359,7 @@ def plot_fits_with_region(fits_dir, reg_file, contrast=0.2, plot_method='matplot
 
     # Plot using the specified method
     if plot_method == 'matplotlib':
-        fig, ax = plt.subplots(subplot_kw={'projection': cutout.wcs})
+        fig, ax = plt.subplots(figsize=(7,5),subplot_kw={'projection': cutout.wcs})
         im = ax.imshow(cutout.data, origin='lower', cmap='gray', vmin=vmin, vmax=vmax)
         ax.set_xlabel('RA')
         ax.set_ylabel('Dec')
@@ -356,9 +367,9 @@ def plot_fits_with_region(fits_dir, reg_file, contrast=0.2, plot_method='matplot
         # Add the region marker
         region_pix = cutout.wcs.world_to_pixel(region_center)
         radius_pix = radius / cutout.wcs.pixel_scale_matrix[0, 0]
-        circle = plt.Circle(region_pix, radius_pix, color='red', fill=False)
-        ax.add_artist(circle)
-        plt.colorbar(im, ax=ax, label='Pixel Value')
+        circle = Circle((region_center.ra.deg,region_center.dec.deg),radius/3600, edgecolor='red', facecolor='none', lw=1, transform=ax.get_transform('world'))
+        ax.add_patch(circle)
+        #plt.colorbar(im, ax=ax, label='ctr')
         if output_file:
             plt.savefig(output_file, bbox_inches='tight', dpi=300)
         plt.show()
