@@ -1,7 +1,7 @@
 from .utils import *
-import xspec as xs
+
 try:
-    import xspec
+    import xspec as xs
 except ImportError:
     print("HEASoft is not initialized or heasoftpy not installed. ")
     class _HeasoftDummy:
@@ -37,6 +37,7 @@ def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH_Galactic, PhoIndex, get
     Returns:
         float: convertion factor
     """
+    import xspec as xs
     xs.Xset.chatter = 0
     xs.Xset.logChatter = 0
     xs.Fit.statMethod = 'cstat'
@@ -95,6 +96,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     Returns:
         tuple or list of tuple: (energies,edeltas,rates,errors,model,labels)
     """
+    import xspec as xs
     if chdir:
         os.chdir(chdir)
     

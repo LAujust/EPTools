@@ -1,4 +1,7 @@
 from .utils import *
+import numpy as np
+import astropy.constants as c
+import astropy.units as u
 
 
 class Model(object):
