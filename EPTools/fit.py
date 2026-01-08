@@ -1,4 +1,5 @@
 from .utils import *
+import sys, os
 
 try:
     import xspec as xs
