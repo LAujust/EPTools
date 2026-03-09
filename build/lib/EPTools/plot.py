@@ -184,12 +184,12 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
                 stepenergies.append(energies[j] - edeltas[j])
             stepenergies.append(energies[-1]+edeltas[-1])
             model.append(model[-1])
-
-            ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i])
+            
+            ax[0].errorbar(energies,rates,xerr=edeltas,yerr=errors,fmt='.',color=random_color[i],label=model_leg[i])
             if plotstyle == 'step':
-                ax[0].step(stepenergies,model,where='post',color=model_color,label=model_leg)
+                ax[0].step(stepenergies,model,where='post',color=model_color)
             elif plotstyle == 'line':
-                ax[0].plot(stepenergies,model,color=model_color,label=model_leg)
+                ax[0].plot(stepenergies,model,color=model_color)
             else:
                 raise KeyError('Not valid plotstyle (step/line)')
             ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color=random_color[i],fmt='.')

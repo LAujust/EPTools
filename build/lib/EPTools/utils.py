@@ -508,7 +508,8 @@ def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2
         fix_ = {model+'.norm':1,'cflux.Emin':erange[ins][0],'cflux.Emax':erange[ins][1]}
         if nH:
             fix_['TBabs.nH'] = nH
-        fitted_data, par_table_i = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='ldata del',N=N,chatter=chatter,**fix_)
+        kwargs = {'fixed_par':fix_}
+        fitted_data, par_table_i = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='ldata del',N=N,chatter=chatter,**kwargs)
         
         model_leg = ''
         for key_par in key_pars[model]:

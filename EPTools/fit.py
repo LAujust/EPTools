@@ -76,7 +76,7 @@ def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH_Galactic, PhoIndex, get
 def grp_data(src,bkg,outputname='PC.pi',arf=None,rmf=None,group=1):
     os.system(f"grppha infile={src} outfile=PC.pi chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {bkg} & exit'")
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**fixed_par):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**kwargs):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -144,9 +144,16 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     # if isinstance(sname,list):
     #     for i in range(len(sname)):
     #         exec('m%s = AllModels(%s)'%(i+1,i+1))
-    for key,value in fixed_par.items():
-        exec('m.{}={}'.format(key,value))
-        exec('m.{}.frozen=True'.format(key))
+    if kwargs.get('fixed_par'):
+        fixed_par = kwargs.get('fixed_par')
+        for key,value in fixed_par.items():
+            exec('m.{}={}'.format(key,value))
+            exec('m.{}.frozen=True'.format(key))
+            
+    if kwargs.get('set_par'):
+        set_par = kwargs.get('set_par')
+        print(set_par)
+        m.setPars(set_par)
     if untied:
         for item in untied:
             key, value = item.split("=")
@@ -190,6 +197,8 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     par_num = 0
     for comp in comps:
         if comp == 'tbabs':
+            comp = 'TBabs'
+        if comp == 'ztbabs':
             comp = 'TBabs'
         pars = MODEL_COMP_PARAM[comp]
         for par in pars:
