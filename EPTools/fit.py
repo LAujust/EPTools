@@ -203,7 +203,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
         pars = MODEL_COMP_PARAM[comp]
         for par in pars:
             par_num += 1
-            xs.Fit.error(str(par_num))
+            xs.Fit.error(f'stop 2,,{str(par_num)}')
             #print("print(par,m.%s.%s.error)"%(comp,par))
             #exec("print(par,m.%s.%s.values)"%(comp,par))
             #exec("print(par,m.%s.%s.error)"%(comp,par))
