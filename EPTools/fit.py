@@ -74,7 +74,7 @@ def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH_Galactic, PhoIndex, get
     return flux/ctrt
 
 def grp_data(src,bkg,outputname='PC.pi',arf=None,rmf=None,group=1):
-    os.system(f"grppha infile={src} outfile=PC.pi chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {bkg} & exit'")
+    os.system(f"grppha infile={src} outfile={outputname} chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {bkg} & exit'")
 
 def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**kwargs):
     """
