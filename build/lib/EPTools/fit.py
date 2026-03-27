@@ -183,46 +183,119 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     par_table['name'] = [mname]
     par_table['sname'] = [sname]
     par_table['cstat/dof'] = reduced_cstat
-
-    # comps = m.componentNames
-    # print(comps)
-    # for comp in comps:
-    #     pars = []
-    #     print(comp)
-    #     exec("pars = m.%s.parameterNames"%comp)
-    #     print(pars)
-    #     for par in pars:
-    #         exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
-
-    par_num = 0
-    for comp in comps:
-        if comp == 'tbabs':
-            comp = 'TBabs'
-        if comp == 'ztbabs':
-            comp = 'TBabs'
-        pars = MODEL_COMP_PARAM[comp]
-        for par in pars:
-            par_num += 1
-            xs.Fit.error(str(par_num))
-            #print("print(par,m.%s.%s.error)"%(comp,par))
-            #exec("print(par,m.%s.%s.values)"%(comp,par))
-            #exec("print(par,m.%s.%s.error)"%(comp,par))
-            exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
-            exec("par_table['%s_err_low']=[m.%s.%s.error[0]]"%(par,comp,par))
-            exec("par_table['%s_err_high']=[m.%s.%s.error[1]]"%(par,comp,par))
     
-    par_table.pprint(max_lines=-1,max_width=-1)
+    # ----------------------------------
+    # 1 Freeze normalization parameters
+    # ----------------------------------
+    for i in range(1, m.nParameters + 1):
+
+        par = m(i)
+
+        if par.name.lower() == "norm":
+            print(f"Freezing parameter {i}: {par.name}")
+            par.frozen = True
+            
+
+    xs.Fit.perform()
+
+
+    # ----------------------------------
+    # 2 Collect parameters for error calc
+    # ----------------------------------
+    error_indices = []
+    par_refs = {}
+
+    for comp, pars in MODEL_COMP_PARAM.items():
+
+        if not hasattr(m, comp):
+            continue
+
+        component = getattr(m, comp)
+
+        for pname in pars:
+
+            if not hasattr(component, pname):
+                continue
+
+            par = getattr(component, pname)
+
+            if par.frozen:
+                continue
+
+            idx = par.index
+
+            error_indices.append(str(idx))
+            par_refs[pname] = par
+
+            print(f"Will compute error for {comp}.{pname} (par {idx})")
+
+
+    # ----------------------------------
+    # 3 Run error calculation once
+    # ----------------------------------
+    if error_indices:
+
+        xs.Fit.error(" ".join(error_indices))
+
+
+    # ----------------------------------
+    # 4 Save results
+    # ----------------------------------
+    for pname, par in par_refs.items():
+
+        par_table[pname] = [par.values[0]]
+        par_table[f"{pname}_err_low"] = [par.error[0]]
+        par_table[f"{pname}_err_high"] = [par.error[1]]
+
+
+    # ----------------------------------
+    # 5 Print table
+    # ----------------------------------
+    par_table.pprint(max_lines=-1, max_width=-1)
+
+    # #freeze norm parameters
+    # for i in range(1, m.nParameters + 1):
+    #     par = m(i)
+
+    #     if par.name.lower() == "norm":
+    #         print(f"Freezing {par.componentName}.{par.name}")
+    #         par.frozen = True
+
+    # par_num = 0
+    # for comp in comps:
+    #     if comp == 'tbabs':
+    #         comp = 'TBabs'
+    #     if comp == 'ztbabs':
+    #         comp = 'TBabs'
+    #     pars = MODEL_COMP_PARAM[comp]
+    #     for par in pars:
+    #         par_num += 1
+    #         xs.Fit.error(f'{str(par_num)}')
+    #         #print("print(par,m.%s.%s.error)"%(comp,par))
+    #         #exec("print(par,m.%s.%s.values)"%(comp,par))
+    #         #exec("print(par,m.%s.%s.error)"%(comp,par))
+    #         exec("par_table[par]=[m.%s.%s.values[0]]"%(comp,par))
+    #         exec("par_table['%s_err_low']=[m.%s.%s.error[0]]"%(par,comp,par))
+    #         exec("par_table['%s_err_high']=[m.%s.%s.error[1]]"%(par,comp,par))
+    
+    # par_table.pprint(max_lines=-1,max_width=-1)
 
     if isinstance(sname,str):
-        xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument][0],erange[instrument][1]))
-        xs.AllModels.calcFlux('0.5 2')
-        xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][1]))
+        xs.AllModels.calcFlux('{:.1f} {:.1f} error'.format(erange[instrument][0],erange[instrument][1]))
+        # xs.AllModels.calcFlux('0.5 2')
+        # xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][1]))
 
     else:
         for i in range(len(sname)):
-            xs.AllModels.calcFlux('{:.1f} {:.1f}'.format(erange[instrument[i]][0],erange[instrument[i]][1]))
-            xs.AllModels.calcFlux('0.5 2')
-            xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][i][1]))
+            xs.AllModels.calcFlux('{:.1f} {:.1f} error'.format(erange[instrument[i]][0],erange[instrument[i]][1]))
+            # xs.AllModels.calcFlux('0.5 2')
+            # xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][i][1]))
+            
+    flux_result = s.flux
+    flux, flux_low, flux_high = flux_result[0], flux_result[1], flux_result[2]
+    par_table['flux'] = [flux]
+    par_table['flux_err_low'] = [flux_low]
+    par_table['flux_err_high'] = [flux_high]
 
     
     
