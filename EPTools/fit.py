@@ -17,6 +17,7 @@ __all__ = ['grp_data','xspec_fitting','dynesty_fitting','get_ctrt_to_flux']
 
 MODEL_COMP_PARAM = {
     'TBabs':['nH'],
+    'zTBabs':['nH'],
     'cflux':['Emin','Emax','lg10Flux'],
     'powerlaw':['PhoIndex','norm'],
     'bbody':['kT','norm'],
@@ -191,9 +192,9 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
 
         par = m(i)
 
-        if par.name.lower() == "norm":
-            print(f"Freezing parameter {i}: {par.name}")
-            par.frozen = True
+        # if par.name.lower() == "norm":
+        #     print(f"Freezing parameter {i}: {par.name}")
+        #     par.frozen = True
             
 
     xs.Fit.perform()
@@ -235,7 +236,8 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     # ----------------------------------
     if error_indices:
 
-        xs.Fit.error(" ".join(error_indices))
+        print("error command: "+ "1. "+" ".join(error_indices))
+        xs.Fit.error("1. "+" ".join(error_indices))
 
 
     # ----------------------------------
@@ -281,6 +283,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     # par_table.pprint(max_lines=-1,max_width=-1)
 
     if isinstance(sname,str):
+        print('{:.1f} {:.1f} error'.format(erange[instrument][0],erange[instrument][1]))
         xs.AllModels.calcFlux('{:.1f} {:.1f} error'.format(erange[instrument][0],erange[instrument][1]))
         # xs.AllModels.calcFlux('0.5 2')
         # xs.AllModels.calcFlux('0.5 {:.1f}'.format(erange[instrument][1]))
