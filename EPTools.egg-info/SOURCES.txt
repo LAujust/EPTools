@@ -3,6 +3,7 @@ README.md
 setup.py
 EPTools/__info__.py
 EPTools/__init__.py
+EPTools/analysis.py
 EPTools/crossmatch.py
 EPTools/fit.py
 EPTools/gw_em.py

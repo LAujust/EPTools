@@ -193,14 +193,6 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
             else:
                 raise KeyError('Not valid plotstyle (step/line)')
             ax[1].errorbar(energies,resid,xerr=edeltas,yerr=residerr,color=random_color[i],fmt='.')
-            ax[0].legend()
-            ax[0].set_ylabel(labels[1])
-            ax[1].set_xlabel(labels[0])
-            ax[0].set_xscale('log')
-            ax[0].set_yscale('log')
-            ax[1].set_ylabel('Residual')
-            ax[0].tick_params(axis='both',which='both',direction='in')
-            ax[1].tick_params(axis='both',which='both',direction='in')
             if not title:
                 ax[0].set_title(labels[2])
             else:
@@ -209,6 +201,14 @@ def xspec_plot(data,save_dir=None,title=None,color='random',plotstyle='step',mod
         #ax[1].hlines(0.0,0.0,10.0,ls='dashed',color='maroon')
         ax[0].grid()
         ax[1].grid()
+        ax[0].legend(fontsize=9)
+        ax[0].set_ylabel(labels[1])
+        ax[1].set_xlabel(labels[0])
+        ax[0].set_xscale('log')
+        ax[0].set_yscale('log')
+        ax[1].set_ylabel('Residual')
+        ax[0].tick_params(axis='both',which='both',direction='in')
+        ax[1].tick_params(axis='both',which='both',direction='in')
 
         if save_dir:
             plt.savefig(save_dir,bbox_inches='tight',dpi=300)

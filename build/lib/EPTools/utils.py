@@ -19,6 +19,7 @@ sys.path.append('$HEADAS/lib/python')
     
 from .plot import *
 from .fit import *
+from .analysis import *
 
 
 __all__ = ['HeaEnv','keV2Hz','Hz2keV','keV2T','keV2erg','lam2Hz','Hz2lam','keV2lam','lam2keV','mag2flx','flx2mag','flx2lum','lum2flux','lcurve2pha','fplot2pha','li_ma_sigma','X_UL','retrive_gracedb','X2mAB','EPexpo2mAB','read_curve','Txx','check_cosmic_ray','TA_quick'] 

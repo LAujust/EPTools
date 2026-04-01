@@ -6,9 +6,6 @@ import subprocess, warnings
 import astropy.constants as c
 from astropy.coordinates import SkyCoord
 from astropy.utils.data import conf
-from ligo.gracedb.rest import GraceDb
-import ligo.skymap
-from gdpyc import GasMap, DustMap
 from scipy.special import gammainc, gammaincc, gammaincinv
 from astropy.table import Table, vstack
 from astropy.io import fits
@@ -19,6 +16,7 @@ sys.path.append('$HEADAS/lib/python')
     
 from .plot import *
 from .fit import *
+from .analysis import *
 
 
 __all__ = ['HeaEnv','keV2Hz','Hz2keV','keV2T','keV2erg','lam2Hz','Hz2lam','keV2lam','lam2keV','mag2flx','flx2mag','flx2lum','lum2flux','lcurve2pha','fplot2pha','li_ma_sigma','X_UL','retrive_gracedb','X2mAB','EPexpo2mAB','read_curve','Txx','check_cosmic_ray','TA_quick'] 
@@ -201,6 +199,7 @@ def X_UL(Nsrc,Nbkg,exposure,alpha=1/12,factor=1e-9,CL = 0.9):
 
 
 def retrive_gracedb(query=''):
+    from ligo.gracedb.rest import GraceDb
     far = 1 #per yr
     far = far/31557600
     far = 'far < 3.17e-8'
