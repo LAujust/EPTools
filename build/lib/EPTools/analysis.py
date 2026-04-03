@@ -7,10 +7,10 @@ __all__ = ['extract_curve_sh','get_clip_stamp','subtract_curve','make_specs_sh',
 def extract_curve_sh(evtfile, src_reg, bkg_reg, binsize=1, root='./', out_dir='./', output_name='xselect_lc'):
     
     if not Path(out_dir).is_absolute():
-        out_dir = os.path.join(root,out_dir)
-    if not os.path.exists(out_dir):
-        print(f"Creating path {out_dir}")
-        os.mkdir(out_dir)
+        out_dir_abs = os.path.join(root,out_dir)
+    if not os.path.exists(out_dir_abs):
+        print(f"Creating path {out_dir_abs}")
+        os.mkdir(out_dir_abs)
     script = f"""
 #!/bin/bash
 rm -rf {os.path.join(out_dir,"src.lc")}
@@ -34,7 +34,6 @@ yes
 
 # --------- basic filtering ----------
 filter grade 0-12
-select event "status==b0"
 
 # --------- SOURCE light curve ----------
 filter region {src_reg}
@@ -103,6 +102,7 @@ def get_clip_stamp(net_lc, ncounts, trange=None, out_file=None):
             idx = (time > trange[0]) & (time < trange[1])
             time = time[idx]
             rate = rate[idx]
+            tend = trange[1]
             
         
 
@@ -136,8 +136,8 @@ def get_clip_stamp(net_lc, ncounts, trange=None, out_file=None):
                 # 更新下一段
                 t0 = time[i]
                 next_threshold += ncounts
-        if segments[-1][1] < trange[1]:
-            segments.append([segments[-1][1],tend])
+        if segments[-1][1] < trange[1]+tstart:
+            segments.append([segments[-1][1],tend+tstart])
 
         if out_file is None:
             return np.array(segments)
