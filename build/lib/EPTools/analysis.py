@@ -137,7 +137,8 @@ def get_clip_stamp(net_lc, ncounts, trange=None, out_file=None):
                 t0 = time[i]
                 next_threshold += ncounts
         if segments[-1][1] < trange[1]+tstart:
-            segments.append([segments[-1][1],tend+tstart])
+            segments[-1][-1] = tend+tstart
+            # segments.append([segments[-1][1],tend+tstart])
 
         if out_file is None:
             return np.array(segments)
