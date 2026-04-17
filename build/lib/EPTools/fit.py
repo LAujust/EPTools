@@ -77,7 +77,7 @@ def get_ctrt_to_flux(source_spec, energy_l, energy_h, nH_Galactic, PhoIndex, get
 def grp_data(src,bkg,outputname='PC.pi',arf=None,rmf=None,group=1):
     os.system(f"grppha infile={src} outfile=PC.pi chatter=0 comm='group min {group} & chkey RESPFILE {rmf} & chkey ANCRFILE {arf} & chkey BACKFILE {bkg} & exit'")
 
-def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**kwargs):
+def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='cstat',instrument='WXT',erange=None,untied=None,plotmode='data resid',chdir=None,N=500,chatter=10,**kwargs):
     """
     !!!Single Spectrum Fitting or Simutaneously Fitting!!!
     !!!To fit single Spectrum, same should be a str; for simutaneously fitting, sname should be a 
@@ -104,8 +104,11 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     
     xs.Xset.allowNewAttributes = True
     xs.Xset.chatter = chatter
-
-    erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
+    
+    if erange is None:
+        erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
+    elif isinstance(erange,list):
+        erange = {instrument:erange}
     
 
     if isinstance(sname,str):
@@ -171,9 +174,6 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     xs.Fit.statMethod = stat
     xs.Fit.perform()
     xs.Fit.show()
-    cstat = xs.Fit.statistic
-    dof = xs.Fit.dof
-    reduced_cstat = cstat / dof
     # xs.Fit.goodness(200)
 
     # Split on *, (, ), +
@@ -183,7 +183,7 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     par_table = Table()
     par_table['name'] = [mname]
     par_table['sname'] = [sname]
-    par_table['cstat/dof'] = reduced_cstat
+
     
     # ----------------------------------
     # 1 Freeze normalization parameters
@@ -299,6 +299,17 @@ def xspec_fitting(sname,mname:str,grp=False,arf=None,rmf=None,rebin=None,stat='c
     par_table['flux'] = [flux]
     par_table['flux_err_low'] = [flux_low]
     par_table['flux_err_high'] = [flux_high]
+    
+    cstat = xs.Fit.statistic
+    dof = xs.Fit.dof
+    reduced_cstat = cstat / dof
+    par_table['cstat/dof'] = reduced_cstat
+    
+    
+    #Save XCM
+    if os.path.exists("all.xcm"):
+        os.remove("all.xcm")
+    xs.Xset.save("all.xcm",info='a')
 
     
     

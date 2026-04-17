@@ -4,15 +4,14 @@ import pandas as pd
 from astropy.cosmology import Planck18
 from astroquery.vizier import Vizier, VizierClass
 from astroquery.heasarc import Heasarc
-from ligo.skymap.postprocess import crossmatch
 from astropy.coordinates import SkyCoord
-from ligo.skymap.io.fits import read_sky_map
 from astropy.table import Table, join, join_skycoord, vstack
 from astropy.io.votable import parse_single_table
 import astropy.units as u
 
 class Crossmatch(object):
     def __init__(self):
+        from ligo.skymap.postprocess import crossmatch
         self.info = None
         self.heasarc = Heasarc()
         self.asassn = None
@@ -89,6 +88,8 @@ def crossmatch_GW_with_cat(skymap_dir,save_dir):
     skymap_dir [str]:   skymap file dir or url
     save_dir[str]:      saved dir of 
     """
+    from ligo.skymap.postprocess import crossmatch
+    from ligo.skymap.io.fits import read_sky_map
 
     #Load Cat
     wise_agn_table = Table.read("/Users/liangrunduo/Desktop/Aujust/NAOC/EP/Crossmatch/catalogs/WISE_AGN.csv", format="csv")

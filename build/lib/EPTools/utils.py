@@ -6,9 +6,6 @@ import subprocess, warnings
 import astropy.constants as c
 from astropy.coordinates import SkyCoord
 from astropy.utils.data import conf
-from ligo.gracedb.rest import GraceDb
-import ligo.skymap
-from gdpyc import GasMap, DustMap
 from scipy.special import gammainc, gammaincc, gammaincinv
 from astropy.table import Table, vstack
 from astropy.io import fits
@@ -202,6 +199,7 @@ def X_UL(Nsrc,Nbkg,exposure,alpha=1/12,factor=1e-9,CL = 0.9):
 
 
 def retrive_gracedb(query=''):
+    from ligo.gracedb.rest import GraceDb
     far = 1 #per yr
     far = far/31557600
     far = 'far < 3.17e-8'
