@@ -4,7 +4,7 @@ from pathlib import Path
 
 __all__ = ['extract_curve_sh','get_clip_stamp','subtract_curve','make_specs_sh','make_rsp_sh']
 
-def extract_curve_sh(evtfile, src_reg, bkg_reg, binsize=1, root='./', out_dir='./', output_name='xselect_lc'):
+def extract_curve_sh(evtfile, src_reg, bkg_reg, binsize=1, root='./', out_dir='./', output_name='xselect_lc',prefix=''):
     
     if not Path(out_dir).is_absolute():
         out_dir_abs = os.path.join(root,out_dir)
@@ -13,8 +13,8 @@ def extract_curve_sh(evtfile, src_reg, bkg_reg, binsize=1, root='./', out_dir='.
         os.mkdir(out_dir_abs)
     script = f"""
 #!/bin/bash
-rm -rf {os.path.join(out_dir,"src.lc")}
-rm -rf {os.path.join(out_dir,"bkg.lc")}
+rm -rf {os.path.join(out_dir,f"src{prefix}.lc")}
+rm -rf {os.path.join(out_dir,f"bkg{prefix}.lc")}
 
 # ================================
 # User settings
@@ -38,11 +38,11 @@ filter grade 0-12
 # --------- SOURCE light curve ----------
 filter region {src_reg}
 extract curve binsize=$binsize
-save curve {os.path.join(out_dir,"src.lc")}
+save curve {os.path.join(out_dir,f"src{prefix}.lc")}
 clear region
 filter region {bkg_reg}
 extract curve binsize=$binsize
-save curve {os.path.join(out_dir,"bkg.lc")}
+save curve {os.path.join(out_dir,f"bkg{prefix}.lc")}
 
 exit
 no
