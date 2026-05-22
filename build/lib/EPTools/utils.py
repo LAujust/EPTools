@@ -396,7 +396,7 @@ def check_cosmic_ray(path:str,s_num:int,cts_thres:float=5):
     plt.show()
 
 
-def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',scale:float=1./12,plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B'):
+def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2,grp:bool=False,nH=None,group=None,rx=None,sep:bool=True,ins:str='WXT',scale:float=1./12,plotstyle:str='step',N:int=500,get_unabs=True,chatter:int=10,module:str='B',erange=None):
     """Quick assembled tool for temporal and spectrum analysis for TA.
 
     Args:
@@ -485,7 +485,10 @@ def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2
     if pha_file:
         pha_src = pha_file
     
-    erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
+    if not erange:
+        erange = {'WXT':[0.5,4],'FXT':[0.5,10]}
+    else:
+        erange = {ins:erange}
     
     if grp and not pha_file:
         pha_grp_src = 'PC.pi'
@@ -508,7 +511,7 @@ def TA_quick(obsid:str,snum:str,root:str='',binsize:int=10,pha_file=None,rebin=2
         if nH:
             fix_['TBabs.nH'] = nH
         kwargs = {'fixed_par':fix_}
-        fitted_data, par_table_i = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='ldata del',N=N,chatter=chatter,**kwargs)
+        fitted_data, par_table_i = xspec_fitting(pha_src,mname=mname,grp=grp,arf=arf,rmf=rmf,rebin=rebin,instrument=ins,plotmode='ldata del',N=N,erange=erange,chatter=chatter,**kwargs)
         
         model_leg = ''
         for key_par in key_pars[model]:
