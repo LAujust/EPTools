@@ -140,8 +140,6 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-./build/**
-
-./EPTools,egg-info/**
-
-./SNID-SAGE/**
+/build/
+/EPTools.egg-info/
+/SNID-SAGE/
