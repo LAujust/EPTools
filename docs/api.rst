@@ -1,11 +1,12 @@
 API Reference
 =============
 
-.. toctree::
-   :maxdepth: 2
-
-
 .. automodule:: EPTools.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: EPTools.analysis
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,6 +17,16 @@ API Reference
    :show-inheritance:
 
 .. automodule:: EPTools.plot
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: EPTools.crossmatch
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: EPTools.gw_em
    :members:
    :undoc-members:
    :show-inheritance:
