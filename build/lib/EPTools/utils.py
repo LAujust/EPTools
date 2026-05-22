@@ -338,9 +338,9 @@ def check_cosmic_ray(path:str,s_num:int,cts_thres:float=5):
         cts_thres (float, optional): count rate threshold. Defaults to 5.
     """
     
-    cat_hdu = fits.open(glob.glob(os.path.join(path,'**.cat')))
-    evt_hdu = fits.open(glob.glob(os.path.join(path,'**po_cl.evt')))
-    uf_hdu = fits.open(glob.glob(os.path.join(path,'**po_uf.evt')))
+    cat_hdu = fits.open(glob.glob(os.path.join(path,'**.cat'))[0])
+    evt_hdu = fits.open(glob.glob(os.path.join(path,'**po_cl.evt'))[0])
+    uf_hdu = fits.open(glob.glob(os.path.join(path,'**po_uf.evt'))[0])
 
     hdudata = cat_hdu[1].data
     x0 = hdudata['x'][s_num-1]
