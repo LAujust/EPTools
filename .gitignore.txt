@@ -144,3 +144,4 @@ build/
 
 EPTools,egg-info/
 
+SNID-SAGE/
